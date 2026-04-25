@@ -23,7 +23,13 @@ except ImportError:
 REPO_ROOT = Path(__file__).resolve().parent.parent
 ONTOLOGY_PATH = REPO_ROOT / "_meta" / "ontology.md"
 
-ROOT_ALLOWED_FILES = {"README.md", "LICENSE", "CITATION.cff", ".gitignore"}
+ROOT_ALLOWED_FILES = {
+    "README.md",
+    "LICENSE",
+    "LICENSE-PROSE",
+    "CITATION.cff",
+    ".gitignore",
+}
 
 
 def parse_frontmatter(md_path: Path):

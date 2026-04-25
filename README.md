@@ -24,9 +24,8 @@ Victor Boscaro & Vladimir Rondelli.
 
 ## Status
 
-- License: pending
-- Citation: pending
-- Visibility: private (will flip public once license + citation are finalized; that commit is the prior-art timestamp anchor)
+- **License (dual):** Code under [Apache 2.0](./LICENSE). Prose (all `.md` content) under [CC BY 4.0](./LICENSE-PROSE). See `CITATION.cff` for the canonical citation record.
+- **Visibility:** Private. The repository will be flipped to public when the authors decide the existence-proof is mature enough to expose. That commit will be the prior-art timestamp anchor.
 
 ## How to read this repository
 

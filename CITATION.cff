@@ -1,0 +1,24 @@
+cff-version: 1.2.0
+message: "If you use this framework, software, or any of its conjectures, please cite it as below."
+title: "DomainSpec Theorem"
+abstract: "A fractal knowledge graph testing the conjecture that strict structural self-similarity exhibits zero residue. Every claim, including the organizing principle, is conjectural by default."
+type: software
+authors:
+  - family-names: "Boscaro"
+    given-names: "Victor"
+  - family-names: "Rondelli"
+    given-names: "Vladimir"
+url: "https://github.com/VictorBoscaro/domainspec-theorem"
+repository-code: "https://github.com/VictorBoscaro/domainspec-theorem"
+license:
+  - Apache-2.0
+  - CC-BY-4.0
+license-url: "https://github.com/VictorBoscaro/domainspec-theorem/blob/main/LICENSE"
+date-released: 2026-04-25
+keywords:
+  - fractal
+  - knowledge-graph
+  - formal-methods
+  - epistemology
+  - residue
+  - strict-regime
