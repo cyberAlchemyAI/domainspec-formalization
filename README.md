@@ -23,7 +23,13 @@ That question led to a formal mathematical model. A functor $\Delta : L_1 \to L_
 
 ## Goal
 
-Validate if what we have here is solid math or just prose with math words. We are not mathematicians, just engineers with an itch for abstract thought, rigor and maybe a well calibrated intuiton. We want your help to prove if we are wrong or not. If not, then we have a proposal 
+Validate if what we have here is solid math or just prose with math words. We are not mathematicians, just engineers with an itch for abstract thought, rigor and maybe a well calibrated intuition. We want your help to prove if we are wrong or not.
+
+If the framework is sound, these are the open problems that remain:
+
+- **[M2](GLOSSARY.md#3--internal-milestone-labels)** — Does a right adjoint to $\Delta$ exist at the schema level? Equivalently, is $\mathrm{Hom}_{\mathcal{L}_2}(\Delta(-), b)$ representable for every $b$? This is the condition under which schema [residue](GLOSSARY.md#residue) is even well-defined.
+- **[M6'](GLOSSARY.md#3--internal-milestone-labels)** — Does faithfulness of $\Delta$ force the instance-level unit $\eta^{\mathrm{ins}}_I$ to be pointwise monic for every $I$? (The strong form, M6, is already refuted — see `M6Counter.lean`.)
+- **[M6-restricted](GLOSSARY.md#3--internal-milestone-labels)** — Does injectivity + faithfulness force an iso on a reflective subcategory of $\mathbf{Set}^{\mathcal{L}_1}$?
 
 ## What's here
 

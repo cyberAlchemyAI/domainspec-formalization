@@ -65,7 +65,7 @@ Terms specific to this project. Where the name is custom or borrowed, a note tra
 
 ### Residue
 
-- **Schema residue** — *conditional on M2.* If a right adjoint $G \dashv \Delta$ exists at the schema level (M2 — currently open), schema residue is the failure of the unit $\eta^{\mathrm{sch}}_v : v \to G(\Delta(v))$ to be iso. Measures: domain concepts that have no faithful shadow in the artifact type system. Until M2 is resolved, this is a *prospective* definition — the concept is only well-defined once $G$ is exhibited.
+- **Schema residue** — *conditional on M2.* If a right adjoint $\Delta \dashv G$ exists at the schema level (M2 — currently open), schema residue is the failure of the unit $\eta^{\mathrm{sch}}_v : v \to G(\Delta(v))$ to be iso. Measures: domain concepts that have no faithful shadow in the artifact type system. Until M2 is resolved, this is a *prospective* definition — the concept is only well-defined once $G$ is exhibited.
 
 - **Instance residue** — failure of $\eta^{\mathrm{ins}}_I : I \Rightarrow \Delta^*(\Sigma_\Delta(I))$ to be iso. Measures: domain data lost (or hallucinated) when populated, compiled, and read back.
 
