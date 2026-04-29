@@ -15,11 +15,13 @@ This document describes what lives in `Fractal.lean` and `DomainSpec.lean`. It a
 
 ## Overview
 
-Two files, two purposes:
+Three files, three purposes:
 
 **`Fractal.lean`** — The proven kernel. Defines what a [fractal functor](../GLOSSARY.md#fractal-functor) is, gives an equivalent characterization (via faithfulness of the left Kan extension), and discharges two cases: the identity is [fractal](../GLOSSARY.md#fractal-functor), and every fully faithful functor is [fractal](../GLOSSARY.md#fractal-functor). Every claim discharged. No sorries.
 
-**`DomainSpec.lean`** — The research landscape. The full two-layer [residue](../GLOSSARY.md#residue) framework formalized in Lean: all the definitions, assumptions, the free adjunctions that exist, and the conjectures still open. It shows where the results in `Fractal.lean` live, and what remains to be proved.
+**`FractalOP.lean`** — The refined hierarchy. Splits the single notion from `Fractal.lean` into four graduated levels — `LanFaithful`, `InstanceFractal`, `SchemaFractal`, and `Fractal` — so that the [M2 conjecture](../GLOSSARY.md#3--internal-milestone-labels) is captured precisely. The schema-level definition takes an explicit adjunction argument rather than a typeclass, preventing typeclass inference from silently assuming the conjecture.
+
+**`DomainSpec.lean`** — The research landscape. The full two-layer [residue](../GLOSSARY.md#residue) framework formalized in Lean: all the definitions, assumptions, the free adjunctions that exist, and the conjectures still open. It shows where the results in `Fractal.lean` and `FractalOP.lean` live, and what remains to be proved.
 
 ---
 
@@ -49,6 +51,55 @@ The identity functor is [fractal](../GLOSSARY.md#fractal-functor). Immediate: th
 Every fully faithful functor is [fractal](../GLOSSARY.md#fractal-functor). If `F` preserves all information at the morphism level (faithful) and reflects it back (full), then the data-level round-trip is lossless.
 
 All three are discharged in full — no gaps, no `sorry`s. They are reference results: if your compiler is fully faithful, information preservation at the [instance level](../GLOSSARY.md#compilation-and-contract) is guaranteed.
+
+---
+
+## `FractalOP.lean` — The Four-Level Hierarchy
+
+Where `Fractal.lean` collapses everything into a single notion (componentwise mono unit), `FractalOP.lean` pulls it apart into four levels that reflect the actual structure of the [M2 conjecture](../GLOSSARY.md#3--internal-milestone-labels).
+
+### Level 1 — `LanFaithful`
+
+```
+def LanFaithful (F : C ⥤ D) : Prop :=
+  ∀ (X : C ⥤ Type v) (c : C),
+    Mono (((F.lanAdjunction (Type v)).unit.app X).app c)
+```
+
+This is exactly the `Fractal` of `Fractal.lean`, renamed. The unit of `Lan_F ⊣ F*` is componentwise monic — no information loss — which is equivalent to `Lan_F` being faithful. Weakest level.
+
+### Level 2 — `InstanceFractal`
+
+```
+def InstanceFractal (F : C ⥤ D) : Prop :=
+  ∀ (X : C ⥤ Type v) (c : C),
+    IsIso (((F.lanAdjunction (Type v)).unit.app X).app c)
+```
+
+The unit is componentwise an isomorphism — not just monic, but also epi. No spurious Skolem witnesses: what you push forward and pull back is identical, not just injected. Strictly stronger than `LanFaithful`. Every fully faithful functor satisfies this.
+
+### Level 3 — `SchemaFractal`
+
+```
+def SchemaFractal {G : D ⥤ C} (F : C ⥤ D) (adj : F ⊣ G) : Prop :=
+  IsIso adj.unit
+```
+
+The unit of an explicit adjunction `F ⊣ G` at the schema level is a natural isomorphism. The adjunction `adj` is an **explicit argument**, not a typeclass. This is intentional: at the schema level, whether a right adjoint to `F` even exists is the content of the [M2 conjecture](../GLOSSARY.md#3--internal-milestone-labels). Making it explicit means you must supply a proof of existence; you cannot accidentally discharge the conjecture via typeclass inference.
+
+### Level 4 — `Fractal`
+
+```
+def Fractal {G : D ⥤ C} (F : C ⥤ D) (adj : F ⊣ G)
+    [∀ X : C ⥤ Type v, F.HasPointwiseLeftKanExtension X] : Prop :=
+  SchemaFractal F adj ∧ InstanceFractal F
+```
+
+Both layers iso. This is the definition that matches the prose: [residue](../GLOSSARY.md#residue) zero at the schema level and at the instance level simultaneously. An equivalence of categories is a fractal; every fully faithful functor with an explicit right adjoint is a fractal.
+
+### What the hierarchy buys
+
+The split lets you state partial results cleanly. You can prove `InstanceFractal F` from Mathlib adjunction theory without needing to resolve [M2](../GLOSSARY.md#3--internal-milestone-labels). You can prove `SchemaFractal F adj` if someone hands you an adjunction. Only `Fractal F adj` requires both — and that is exactly where [M2](../GLOSSARY.md#3--internal-milestone-labels) sits.
 
 ---
 
@@ -184,12 +235,20 @@ Does [schema-level](../GLOSSARY.md#compilation-and-contract) discipline guarante
 
 ```
 ┌─ Fractal.lean ─────────────────────────────────────────┐
-│ • Definition of "fractal"                              │
+│ • Single "fractal" definition (componentwise mono)     │
 │ • Characterization + two cases (identity, fully FF)    │
 │   (all discharged)                                      │
 └─────────────────────────────────────────────────────────┘
+        ↓ refined into
+┌─ FractalOP.lean ───────────────────────────────────────┐
+│ • Four-level hierarchy: LanFaithful → InstanceFractal  │
+│   → SchemaFractal → Fractal                            │
+│ • SchemaFractal takes explicit adj (M2 is not assumed) │
+│ • All four levels discharged for identity, equivalence,│
+│   and fully faithful functors                          │
+└─────────────────────────────────────────────────────────┘
         ↑
-        └─ illustrates the ideal case of
+        └─ both illustrate the ideal case of
            DomainSpec.lean
 
 ┌─ DomainSpec.lean ──────────────────────────────────────┐
@@ -202,7 +261,7 @@ Does [schema-level](../GLOSSARY.md#compilation-and-contract) discipline guarante
 └─────────────────────────────────────────────────────────┘
 ```
 
-The three results in `Fractal.lean` are the *positive answer*: under the right conditions (fully faithful), information is preserved perfectly at the [instance level](../GLOSSARY.md#compilation-and-contract). `DomainSpec.lean` is the *research question*: when do those conditions hold in a two-layer compilation model, and what can we prove about the gaps when they don't?
+The results in `Fractal.lean` and `FractalOP.lean` are the *positive answer*: under the right conditions (fully faithful), information is preserved perfectly at both layers. `DomainSpec.lean` is the *research question*: when do those conditions hold in a two-layer compilation model, and what can we prove about the gaps when they don't?
 
 ---
 
@@ -246,10 +305,12 @@ The three results in `Fractal.lean` are the *positive answer*: under the right c
 
 | Result | File | Status | Role |
 |---|---|---|---|
-| Fractal definition | Fractal.lean | Defined | Core concept |
+| Fractal definition (mono) | Fractal.lean | Defined | Core concept |
 | Fractal ↔ faithful | Fractal.lean | **Proved** | Equivalence characterization |
 | Identity is fractal | Fractal.lean | **Proved** | Base case |
 | FullyFaithful → fractal | Fractal.lean | **Proved** | Sufficient condition |
+| Four-level hierarchy | FractalOP.lean | Defined | Refines M2 boundary |
+| LanFaithful / InstanceFractal / SchemaFractal / Fractal | FractalOP.lean | **Proved** (identity, equiv, fully FF) | Graduated cases |
 | Schema adjunction (M2) | DomainSpec.lean | **Conjectural** | Open question |
 | Instance adjunctions (M5) | DomainSpec.lean | **Free in theory, `sorry` in file** | Mathlib wiring not yet done |
 | Weak coherence (M6) | DomainSpec.lean | **Conjectural** | Open question |
