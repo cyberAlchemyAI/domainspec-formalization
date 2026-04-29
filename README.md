@@ -5,58 +5,52 @@ kind: meta
 status: conjectural
 authors: [Boscaro, Rondelli]
 created: 2026-04-25
-updated: 2026-04-25
-edges:
-  - type: instantiates
-    target: zero-residue-of-fractals
-    note: "This repository is the existence-proof attempt for this conjecture."
+updated: 2026-04-29
+edges: []
 ---
 
 # DomainSpec Theorem
 
-This repository is an experiment.
+A formal mathematical framework for understanding information preservation in compilation and translation.
 
-It is structured as a fractal of Atomic Nodes because we conjecture that fractal structures exhibit zero residue under the Strict Regime. **We do not yet have a proof.** The repository is the existence-proof attempt: if the structure survives at scale, that is evidence for the conjecture; if it breaks down, that is data against it. Every claim in this repo, including this organizing principle, has status `conjectural` until formally proved.
+## Origin
+
+We started by building a system framework to help understand how systems explain themselves — a 7-layer model from domain through code to governance. The key insight: the **compilation step** from domain formalization (L1) to code (L2) is where information leaks.
+
+Every translation has [residue](GLOSSARY.md#residue): what cannot be fully expressed in the target representation. *What if some translations have zero [residue](GLOSSARY.md#residue)?*
+
+That question led to a formal mathematical model. A functor $\Delta : L_1 \to L_2$ is called **[fractal](GLOSSARY.md#fractal-functor)** if the compilation preserves all information — at both the [schema level](GLOSSARY.md#compilation-and-contract) (types) and the [instance level](GLOSSARY.md#compilation-and-contract) (data). This repository contains the framework and proofs about fractals.
+
+## Goal
+
+Validate if what we have here is solid math or just prose with math words. We are not mathematicians, just engineers with an itch for abstract thought, rigor and maybe a well calibrated intuiton. We want your help to prove if we are wrong or not. If not, then we have a proposal 
+
+## What's here
+
+**Core publication:**
+- **[Fractal.lean](./lean-formalization/Fractal.lean)** — A four-level hierarchy of [fractal functors](GLOSSARY.md#fractal-functor): `LanFaithful` ([instance-level](GLOSSARY.md#compilation-and-contract) mono; equivalent to `Lan_F` faithful), `InstanceFractal` ([instance-level](GLOSSARY.md#compilation-and-contract) iso), `SchemaFractal` (unit of an explicit adjunction `F ⊣ G` is a natural iso; existence of that adjunction is the [M2](GLOSSARY.md#3--internal-milestone-labels) conjecture), and `Fractal` (both layers). ~15 theorems establish that identity and fully-faithful functors satisfy all four levels, and that categorical equivalences yield full fractals.
+- **[M6Counter.lean](./lean-formalization/M6Counter.lean)** — Formal refutation of [M6](GLOSSARY.md#3--internal-milestone-labels) (strong): proof that schema-side discipline (injectivity + faithfulness on $\Delta$) does **not** propagate to [instance-side](GLOSSARY.md#compilation-and-contract) fidelity. The four-object counterexample, fully formalized in Lean 4. No `sorry`s.
+- **[DomainSpec.lean](./lean-formalization/DomainSpec.lean)** — The full Lean 4 formalization: the two-layer [residue](GLOSSARY.md#residue) framework and open conjectures ([M2](GLOSSARY.md#3--internal-milestone-labels), [M6'](GLOSSARY.md#3--internal-milestone-labels), [M6-restricted](GLOSSARY.md#3--internal-milestone-labels)).
+
+**Mathematical framework:**
+- **[docs/domainspec-two-layer-framework.md](./docs/domainspec-two-layer-framework.md)** — The two-layer [residue](GLOSSARY.md#residue) formalization. Why [schema-level](GLOSSARY.md#compilation-and-contract) and [instance-level](GLOSSARY.md#compilation-and-contract) translation leaks exist independently, and what conjectures remain open.
+
+**Background & context:**
+- **[docs/meta-layers-reference.md](./docs/meta-layers-reference.md)** — The system-design framework that motivated this work. How the 7-layer model connects to the mathematical questions.
+
+## Building
+
+```bash
+cd lean-formalization
+lake build
+```
+
+Requires [Lean 4](https://lean-lang.org/) and [Mathlib](https://github.com/leanprover-community/mathlib4).
 
 ## Authors
 
-Victor Boscaro & Vladimir Rondelli.
+Victor Boscaro & Vladimir Rondelli
 
-## Status
+## License
 
-- **License (dual):** Code under [Apache 2.0](./LICENSE). Prose (all `.md` content) under [CC BY 4.0](./LICENSE-PROSE). See `CITATION.cff` for the canonical citation record.
-- **Visibility:** Private. The repository will be flipped to public when the authors decide the existence-proof is mature enough to expose. That commit will be the prior-art timestamp anchor.
-
-## How to read this repository
-
-The fractal begins at [`children/`](./children/). Every directory inside is a Node. Every Node has the same shape:
-
-- `README.md` — frontmatter (machine-readable metadata) plus the human-readable claim
-- `children/` — sub-Nodes (may be empty)
-- Optional attachments (proofs, diagrams, data)
-
-The single rule that governs the entire repository:
-
-> **Every directory whose name does not start with `_` is a Node. Every Node has the same shape. No exceptions.**
-
-See [`_meta/RULE.md`](./_meta/RULE.md) for the full statement, [`_meta/ontology.md`](./_meta/ontology.md) for the schema of allowed node kinds and edge types, and [`_meta/validate.py`](./_meta/validate.py) for the enforcement script.
-
-## Sanctuaries (directories outside the fractal)
-
-Directories prefixed with `_` are not Nodes. They are explicit escape valves:
-
-- [`_residue/`](./_residue/) — the maturity funnel for ideas not yet rigorous enough to be Nodes
-- [`_explorer/`](./_explorer/) — the visualization (the canonical reading interface; the file browser is the substrate, this is the lens)
-- [`_meta/`](./_meta/) — repository governance: the rule, the ontology, the validator, contributing guide
-
-## What "conjectural" means here
-
-Everything in this repository has status `conjectural` by default. Some claims may be elevated to `proved` by attaching a formal proof; some may be marked `refuted` and kept for honesty; some may be `deprecated` and superseded by other Nodes. **Nothing is "stable"** — that word does not appear in the status taxonomy. The framework's honesty is measured by what it has been willing to mark `refuted`.
-
-## The meta-conjecture
-
-The first Node in this repository is the conjecture this repository tests:
-
-[`children/zero-residue-of-fractals/`](./children/zero-residue-of-fractals/)
-
-The repository points at the conjecture it embodies. The fractal closes on itself.
+Code under [Apache 2.0](./LICENSE). Prose under [CC BY 4.0](./LICENSE-PROSE).

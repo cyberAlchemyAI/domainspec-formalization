@@ -7,3 +7,11 @@ node_modules/
 *.swp
 .idea/
 .vscode/
+_explorer/
+_meta/
+_residue/
+agents/
+children/
+theorem/
+FractalOP.lean
+

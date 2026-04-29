@@ -1,0 +1,17 @@
+name = "domainspec"
+defaultTargets = ["DomainSpec", "Fractal", "M6Counter"]
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+
+[[lean_lib]]
+name = "DomainSpec"
+srcDir = ".."
+
+[[lean_lib]]
+name = "Fractal"
+srcDir = ".."
+
+[[lean_lib]]
+name = "M6Counter"
