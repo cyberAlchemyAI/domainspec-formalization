@@ -44,6 +44,9 @@ If the framework is sound, these are the open problems that remain:
 **Background & context:**
 - **[docs/meta-layers-reference.md](./docs/meta-layers-reference.md)** — The system-design framework that motivated this work. How the 7-layer model connects to the mathematical questions.
 
+**Fractal visualization:**
+- **[visualization/fractals.html](./visualization/fractals.html)** — A cool visualization.
+
 ## Building
 
 ```bash
