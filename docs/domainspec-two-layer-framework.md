@@ -67,29 +67,75 @@ The [residue](../GLOSSARY.md#residue) is not metaphor. It is two categorical obj
 
 ## Section 2 — The Conceptual Structure of Compilation
 
-Two layers, two adjunctions, four objects. Diagrammatically:
+### 2.1 The picture in one paragraph
+
+Compilation has two layers, and both leak independently. The first layer is the **contract**: how a domain ontology maps into a code schema — types, tables, classes, relations. The second layer is the **data**: how populated domain states migrate into populated artifact states — actual rows, actual instances. This section names the four objects, the two adjunctions that connect them, and the structural reason the two leaks cannot be collapsed into a single audit.
 
 ```
-   schema level              instance level
-   --------------            -------------------
+   schema level                instance level
+   ────────────                ─────────────────
 
-       L1 ⇌ L2                   Set^L1  ⇌  Set^L2
-       Δ                          Σ_Δ ⊣ Δ* ⊣ Π_Δ
-       (G conjectural)            (free, via Kan)
+       L₁ ⇌ L₂                   Set^L₁  ⇌  Set^L₂
+         Δ                       Σ_Δ ⊣ Δ* ⊣ Π_Δ
+    (G conjectural)              (free, via Kan)
 ```
 
-- $\mathcal{L}_1$: a finitely presented category — the domain ontology. Objects are domain concepts; morphisms are functional aspects; commuting diagrams are domain facts.
-- $\mathcal{L}_2$: a finitely presented category — the code schema. Objects are *artifact types* (the type DatabaseTable, not any specific table). Morphisms are functional aspects between types.
-- $\Delta : \mathcal{L}_1 \to \mathcal{L}_2$: the **[compilation contract](../GLOSSARY.md#compilation-and-contract)** — a schema functor. It preserves composition and identity because contract composition is well-defined, not because any generation process is deterministic.
-- $\mathbf{Set}^{\mathcal{L}_1}$, $\mathbf{Set}^{\mathcal{L}_2}$: the **instance categories**. A copresheaf $I \in \mathbf{Set}^{\mathcal{L}_1}$ is a populated state of the domain — to each concept-type it assigns a set of concrete instances. Likewise $\mathbf{Set}^{\mathcal{L}_2}$ is the category of populated artifact states.
+### 2.2 The four objects
 
-**[Schema-level](../GLOSSARY.md#compilation-and-contract) [residue](../GLOSSARY.md#residue) (conjectural).** If $\Delta$ admits a right adjoint $G : \mathcal{L}_2 \to \mathcal{L}_1$ at the [schema level](../GLOSSARY.md#compilation-and-contract), then for every $\mathcal{L}_1$-object $v$ there is a unit $\eta^{\mathrm{sch}}_v : v \to G(\Delta(v))$. When $\eta^{\mathrm{sch}}_v$ is an isomorphism, the contract round-trip $\mathcal{L}_1 \to \mathcal{L}_2 \to \mathcal{L}_1$ recovers $v$ exactly. When it fails, the failure is the **[schema residue](../GLOSSARY.md#residue)**: domain concepts that have no faithful shadow in the artifact type system. *This adjunction is not free. [M2](../GLOSSARY.md#3--internal-milestone-labels) (representability) is the conjecture that secures it.*
+A small example makes the abstractions concrete: think of a domain that has `Customer`, `Order`, `Address` and a fact like *every order has exactly one customer*. The compiler turns this into a code schema with classes (or tables) `CustomerRow`, `OrderRow`, `AddressRow` and a foreign key `OrderRow.customer_id`. The four objects below are the four pieces of that picture, generalized.
 
-**[Instance-level](../GLOSSARY.md#compilation-and-contract) [residue](../GLOSSARY.md#residue) (free).** Without any extra hypothesis, the precomposition functor $\Delta^* : \mathbf{Set}^{\mathcal{L}_2} \to \mathbf{Set}^{\mathcal{L}_1}$ has both adjoints — left Kan extension $\Sigma_\Delta = \mathrm{Lan}_\Delta$ and right Kan extension $\Pi_\Delta = \mathrm{Ran}_\Delta$:
+- **$\mathcal{L}_1$ — the *domain ontology*** as a finitely presented category. *Objects* are domain concepts (`Customer`, `Order`, `Address`); *morphisms* are functional aspects (`Order → Customer`, encoding "every order has a customer"); *commuting diagrams* are domain facts that must hold no matter how the data is realized.
+- **$\mathcal{L}_2$ — the *code schema*** as a finitely presented category. *Objects* are *artifact types* (the type `DatabaseTable`, not any specific table; the class `OrderRow`, not any specific row). *Morphisms* are functional aspects between types — foreign keys, method signatures, accessor pairs.
+- **$\Delta : \mathcal{L}_1 \to \mathcal{L}_2$ — the [compilation contract](../GLOSSARY.md#compilation-and-contract).** A functor: it sends every domain concept to an artifact type, and every domain morphism to a morphism between those types, preserving composition and identity. The functorial discipline holds because *contract composition is well-defined* — not because any generation process is deterministic.
+- **$\mathbf{Set}^{\mathcal{L}_1}, \mathbf{Set}^{\mathcal{L}_2}$ — the *instance categories*.** A copresheaf $I \in \mathbf{Set}^{\mathcal{L}_1}$ is a *populated state of the domain*: to each concept-type it assigns a set of concrete instances (the actual customers, the actual orders, with the actual `order → customer` arrows wired up). $\mathbf{Set}^{\mathcal{L}_2}$ does the same for the artifact world (the actual rows, the actual foreign-key links).
+
+The two layers — *types* on top, *populated states* underneath — are what the rest of this section tracks separately.
+
+### 2.3 The two leaks
+
+#### Schema-level residue (conjectural)
+
+**Intuition.** Take a domain concept like `Customer`, compile it into an artifact type, then ask: from the artifact alone, could I name back the original concept *with the same structure*? If yes, the contract is faithful for that concept. If not, something about `Customer` — a temporal dimension, an invariant, a substructure — has no slot in the type system at all. That something is the schema residue: not a translation error you can fix, but a vocabulary gap you cannot close without changing $\mathcal{L}_2$.
+
+**Math.** If $\Delta$ admits a right adjoint $G : \mathcal{L}_2 \to \mathcal{L}_1$ at the [schema level](../GLOSSARY.md#compilation-and-contract), every $\mathcal{L}_1$-object $v$ acquires a unit
+$$\eta^{\mathrm{sch}}_v : v \to G(\Delta(v)).$$
+When $\eta^{\mathrm{sch}}_v$ is an isomorphism, the round-trip $\mathcal{L}_1 \to \mathcal{L}_2 \to \mathcal{L}_1$ recovers $v$ exactly; when it fails, the failure is the **[schema residue](../GLOSSARY.md#residue)**. *The adjunction is not free*: whether $G$ exists at all is the conjecture [M2](../GLOSSARY.md#3--internal-milestone-labels) — that each presheaf $\mathrm{Hom}_{\mathcal{L}_2}(\Delta(-), b)$ is representable on $\mathcal{L}_1$. Until [M2](../GLOSSARY.md#3--internal-milestone-labels) is settled, the schema-residue framing is *available* but not *guaranteed*.
+
+#### Instance-level residue (free)
+
+**Intuition.** Now leave types behind and bring in populated data — actual customers, actual orders. The contract gives you two universal ways to push that data through it, and they tell different stories at exactly the points where the contract under-determines the result:
+
+- **$\Sigma_\Delta$ — the cheapest migration.** Where the contract leaves a slot the data doesn't fill (an `Order` whose `Customer` was never specified; a foreign key the spec didn't pin), $\Sigma_\Delta$ inserts a *fresh anonymous witness* — a "Skolem null." It minimizes invention but invents.
+- **$\Pi_\Delta$ — the most conservative migration.** At every artifact slot, $\Pi_\Delta$ carries *every legal completion at once* — every value consistent with the data. It minimizes commitment but maximizes ambiguity.
+
+Both are *universal* in the categorical sense — adjoints to the same precomposition functor. The data does not tell you which one is correct; that decision belongs to whoever owns the domain. Crucially, the contract makes both available *for free* — no extra hypothesis.
+
+**Math.** Without any extra hypothesis, the precomposition functor $\Delta^* : \mathbf{Set}^{\mathcal{L}_2} \to \mathbf{Set}^{\mathcal{L}_1}$ admits *both* adjoints — left Kan extension $\Sigma_\Delta = \mathrm{Lan}_\Delta$ and right Kan extension $\Pi_\Delta = \mathrm{Ran}_\Delta$:
 $$\Sigma_\Delta \;\dashv\; \Delta^* \;\dashv\; \Pi_\Delta.$$
-For any populated domain state $I \in \mathbf{Set}^{\mathcal{L}_1}$, the unit $\eta^{\mathrm{ins}}_I : I \Rightarrow \Delta^*(\Sigma_\Delta(I))$ measures the **[instance residue](../GLOSSARY.md#residue)** — what the populated round-trip loses. $\Sigma_\Delta$ generates the most efficient migration (introducing [Skolem-null witnesses](../GLOSSARY.md#migration-vocabulary) for fields the contract cannot determine); $\Pi_\Delta$ generates the most conservative (joining all valid completions). Neither is the "right" choice in the abstract — they are two universal generation modes the contract makes available for free.
+For any populated domain state $I$, the unit of the left adjunction
+$$\eta^{\mathrm{ins}}_I : I \Rightarrow \Delta^*(\Sigma_\Delta(I))$$
+measures the **[instance residue](../GLOSSARY.md#residue)**: which populated cells the round-trip lost, and which it hallucinated as Skolem nulls.
 
-**The independence of two layers.** Schema-side injectivity + faithfulness does not force $\eta^{\mathrm{ins}}_I$ iso for every $I$. A minimal counterexample on four objects demonstrates this: $\mathcal{L}_1$ discrete on two objects, $\mathcal{L}_2$ adds a single morphism between them, $\Delta$ the inclusion, $I$ constant — the unit fails to be iso because $\Sigma_\Delta$ populates the comma category with a [Skolem-null](../GLOSSARY.md#migration-vocabulary) witness that the schema cannot constrain. The two layers are permanently independent. The two budgets do not reduce.
+#### Independence — schema fidelity does not buy data fidelity
+
+**Intuition.** Imagine your type system is perfectly tight: every domain concept has a unique name in the artifact world, no concept got crushed, the contract is *faithful*. You might hope this implies the data round-trip is also tight — that whatever survives at the type level survives at the data level. It doesn't. Even with a faithful contract, $\mathcal{L}_2$ can carry morphisms — relationships between artifact types — that have no source in $\mathcal{L}_1$. When data has to cross such a morphism, $\Sigma_\Delta$ must invent something to fill it. The schema is silent on the invention; the data sees it. Faithfulness has no leverage there.
+
+**Math.** Schema-side injectivity and faithfulness do **not** force $\eta^{\mathrm{ins}}_I$ to be iso for every $I$. A four-object counterexample (see §3.6) is enough: $\mathcal{L}_1$ discrete on two objects, $\mathcal{L}_2$ adds one morphism between them, $\Delta$ the inclusion, $I$ the constant copresheaf. $\Sigma_\Delta$ populates the comma category with a [Skolem-null](../GLOSSARY.md#migration-vocabulary) witness the schema cannot constrain, and the unit fails to be iso. The two layers are permanently independent. The two budgets do not reduce — and the audit must price both.
+
+### 2.4 Why this matters for AI code generation
+
+An LLM-driven code generator ingests a domain description and emits code — schemas, classes, migrations, sample data. From the outside, its failures all look the same: the output is "wrong." The two-layer framework says they are not the same, and that two distinct failure modes coexist with different causes and different fixes.
+
+| Failure mode | Lives at | What the model did | What an audit must check |
+|---|---|---|---|
+| **Concept erasure** | Schema layer | Produced a type system that cannot, even in principle, name a concept the spec carried — e.g., "household" silently folded into "user," a temporal dimension dropped, an invariant left unrepresentable. | Whether $\Delta$ is faithful: does every domain concept have a name in the generated schema, with the right morphisms between names? |
+| **Data hallucination** | Instance layer | Produced code or sample data with fabricated keys, default values, joins, or enum cases the spec did not authorize. | Whether $\eta^{\mathrm{ins}}_I$ is monic on the populations the system actually sees: are the witnesses the model invented harmless, or load-bearing? |
+
+A reviewer who only checks the schema layer ("the types look right") will pass code that hallucinates rows. A reviewer who only checks runtime data ("the migration ran without errors") will pass code whose schema silently dropped a concept. The two-layer regime forces this apart: **these are different audits, and one cannot replace the other.**
+
+The framework also names a subtler regularity. Whenever the spec under-determines a field — a foreign key it did not pin, an enum case it did not enumerate, a join cardinality it left implicit — the generator is forced into a $\Sigma_\Delta$-versus-$\Pi_\Delta$ choice: invent a fresh witness, or enumerate every consistent completion. Both are universal in the categorical sense; neither is wrong by itself. But models do not announce which of the two they did, and only one of them is what the user wanted. The two-layer language gives the auditor a sentence they could not say before: *"At the points where the contract under-determined the data, did you Skolemize, or did you join?"*
+
+This is the practical payoff. The [residue](../GLOSSARY.md#residue) is not a soft critique. **It is the part of an AI-generated artifact where the model made a structural choice the spec did not authorize** — and naming the layer where that choice lives is the prerequisite to evaluating it. Without the two-layer split, every disagreement collapses into "the model got it wrong" and there is nowhere to locate the disagreement; with it, the auditor and the model can argue about a specific cell of a specific unit map.
 
 ---
 

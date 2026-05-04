@@ -153,23 +153,13 @@ theorem schemaFractal_id :
   exact inferInstance
 
 /-- A fully faithful functor `F` with a right adjoint `G` is a schema fractal:
-`[Full F] [Faithful F]` implies the unit of `F ⊣ G` is an iso.
-
-Note: the exact Mathlib lemma name is uncertain.  The relevant result should
-be something like `Adjunction.isIso_unit_of_fullyFaithful` or follow from
-`Adjunction.fullyFaithfulEquiv`.  We use `sorry` pending name lookup. -/
+`[Full F] [Faithful F]` implies the unit of `F ⊣ G` is an iso. -/
 theorem schemaFractal_of_fullyFaithful {G : D ⥤ C} (F : C ⥤ D)
     (adj : F ⊣ G) (h : F.FullyFaithful) :
     SchemaFractal F adj := by
   simp [SchemaFractal]
-  -- need: `[Full F] [Faithful F]` (or `F.FullyFaithful`) and `adj : F ⊣ G`
-  -- implies `IsIso adj.unit`.
-  -- Candidate Mathlib lemma: `Adjunction.isIso_unit_of_full_of_faithful`
-  -- or the instance produced by `Adjunction.FullyFaithful.isIso_unit`.
   haveI : F.Full := h.full
   haveI : F.Faithful := h.faithful
-  -- `Adjunction.unit_isIso_of_L_fully_faithful` is a Mathlib instance:
-  -- `[L.Full] [L.Faithful] → IsIso (adj.unit)`
   exact inferInstance
 
 /-! ## Level 4 — `Fractal`: both layers iso -/

@@ -1,5 +1,5 @@
 name = "domainspec"
-defaultTargets = ["DomainSpec", "Fractal", "M6Counter"]
+defaultTargets = ["DomainSpec", "Fractal", "FractalOP", "M6Counter", "M2Counter"]
 
 [[require]]
 name = "mathlib"
@@ -14,4 +14,13 @@ name = "Fractal"
 srcDir = ".."
 
 [[lean_lib]]
+name = "FractalOP"
+srcDir = ".."
+
+[[lean_lib]]
 name = "M6Counter"
+srcDir = ".."
+
+[[lean_lib]]
+name = "M2Counter"
+srcDir = ".."
