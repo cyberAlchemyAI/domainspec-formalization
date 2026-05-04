@@ -179,7 +179,7 @@ The `diagnostics` block is exactly the shape Tier 2 expects:
 |---|---|---|
 | `delta.json::objects_multi_mapped` | injectivity-checker | `IsInjectiveOnObjects Δ` (DomainSpec.lean) |
 | `delta.json::morphisms_unwitnessed` | faithfulness-checker | `Functor.Faithful Δ` |
-| `delta.json::objects_orphan_l2` | m2-representability-checker | M2 conjecture (open in DomainSpec.lean) |
+| `delta.json::objects_orphan_l2` | m2-representability-checker | M2 (unrestricted refuted in `M2Counter.lean`; restricted form stated as `SchemaAdjunctionConjecture` in `DomainSpec.lean`, open) |
 | schema verdict | schema-fractal-prover | `SchemaFractal F adj` (FractalOP.lean) |
 | runtime / test fixture round-trip | instance-fractal-prover | `InstanceFractal F` (FractalOP.lean) |
 | any of the above failing | counterexample-finder + lean-emitter | sibling of `M6Counter.lean` |

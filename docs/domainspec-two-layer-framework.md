@@ -156,11 +156,12 @@ This is the practical payoff. The [residue](../GLOSSARY.md#residue) is not a sof
 
 **Original Result:**
 
-- **[M6](../GLOSSARY.md#3--internal-milestone-labels) (strong) — Refuted.** "$\Delta$ injective on objects + faithful on morphisms $\implies$ $\eta^{\mathrm{ins}}_I$ iso for every $I$." Refuted by a four-object counterexample (see §3.6). Lean formalization in progress.
+- **[M6](../GLOSSARY.md#3--internal-milestone-labels) (strong) — Refuted.** "$\Delta$ injective on objects + faithful on morphisms $\implies$ $\eta^{\mathrm{ins}}_I$ iso for every $I$." Refuted by a four-object counterexample (see §3.6), formalized in `M6Counter.lean` with no `sorry`.
+- **[M2](../GLOSSARY.md#3--internal-milestone-labels) (unrestricted) — Refuted.** "For every functor $\Delta$ and every $b \in \mathcal{L}_2$, the presheaf $\mathrm{Hom}_{\mathcal{L}_2}(\Delta(-), b)$ is representable." Refuted by reusing the four-object setup: $\Delta$ the inclusion $\mathrm{Discrete}(\mathrm{Fin}\,2) \hookrightarrow \mathcal{L}_2$, $b$ the codomain of the missing arrow $f$. Formalized in `M2Counter.lean` (`M2_unrestricted_false`).
 
 **Open Conjectures:**
 
-- **[M2](../GLOSSARY.md#3--internal-milestone-labels) — Schema-Level Adjunction (Representability).** For every $b \in \mathcal{L}_2$, the contravariant Hom-functor $\mathrm{Hom}_{\mathcal{L}_2}(\Delta(-), b)$ is representable on $\mathcal{L}_1$. If true, $G$ exists pointwise and $\eta^{\mathrm{sch}}$ is the [schema residue](../GLOSSARY.md#residue)'s name. Open.
+- **[M2-restricted](../GLOSSARY.md#3--internal-milestone-labels) — Schema-Level Adjunction (Representability) under a restriction on $\Delta$.** Identify a class of functors $\Delta$ (e.g. fully faithful, dense, pointwise codense) for which $\mathrm{Hom}_{\mathcal{L}_2}(\Delta(-), b)$ is representable on $\mathcal{L}_1$ for every $b \in \mathcal{L}_2$. The unrestricted form is refuted (see Original Results above); the restricted form is open. If true under the right restriction, $G$ exists pointwise and $\eta^{\mathrm{sch}}$ is the [schema residue](../GLOSSARY.md#residue)'s name.
 - **[M6'](../GLOSSARY.md#3--internal-milestone-labels) — Instance-Level Monomorphism Coherence.** $\Delta$ faithful $\implies$ $\eta^{\mathrm{ins}}_I$ pointwise monic for every $I \in \mathbf{Set}^{\mathcal{L}_1}$. On representables it's immediate; the lift to all $I$ is the open part.
 - **[M6-restricted](../GLOSSARY.md#3--internal-milestone-labels) — Coherence on a Fragment.** $\Delta$ injective + faithful $\implies$ $\eta^{\mathrm{ins}}_I$ iso for every $I$ in some reflective subcategory of $\mathbf{Set}^{\mathcal{L}_1}$ (e.g., representable-generated states).
 

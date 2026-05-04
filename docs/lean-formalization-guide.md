@@ -15,13 +15,17 @@ This document describes what lives in `Fractal.lean` and `DomainSpec.lean`. It a
 
 ## Overview
 
-Three files, three purposes:
+Five files, five purposes:
 
 **`Fractal.lean`** — The proven kernel. Defines what a [fractal functor](../GLOSSARY.md#fractal-functor) is, gives an equivalent characterization (via faithfulness of the left Kan extension), and discharges two cases: the identity is [fractal](../GLOSSARY.md#fractal-functor), and every fully faithful functor is [fractal](../GLOSSARY.md#fractal-functor). Every claim discharged. No sorries.
 
 **`FractalOP.lean`** — The refined hierarchy. Splits the single notion from `Fractal.lean` into four graduated levels — `LanFaithful`, `InstanceFractal`, `SchemaFractal`, and `Fractal` — so that the [M2 conjecture](../GLOSSARY.md#3--internal-milestone-labels) is captured precisely. The schema-level definition takes an explicit adjunction argument rather than a typeclass, preventing typeclass inference from silently assuming the conjecture.
 
 **`DomainSpec.lean`** — The research landscape. The full two-layer [residue](../GLOSSARY.md#residue) framework formalized in Lean: all the definitions, assumptions, the free adjunctions that exist, and the conjectures still open. It shows where the results in `Fractal.lean` and `FractalOP.lean` live, and what remains to be proved.
+
+**`M6Counter.lean`** — The four-object counterexample. Constructs the concrete setup (`L1 = Discrete (Fin 2)`, `L2 = {a, b, f : a → b}`, Δ the inclusion) used to refute the strong form of the [M6 coherence conjecture](../GLOSSARY.md#3--internal-milestone-labels): even when Δ is fully faithful, the [instance-level](../GLOSSARY.md#compilation-and-contract) unit fails to be iso. The carriers, the category structure, and the Kan-extension instance live here.
+
+**`M2Counter.lean`** — The refutation of unrestricted [M2](../GLOSSARY.md#3--internal-milestone-labels). Reuses the four-object setup from `M6Counter.lean` and shows that the unrestricted Schema-Adjunction Conjecture is false: the presheaf `(Δ.op ⋙ yoneda.obj b)` is not representable, so no schema-level right adjoint exists in general. The conjecture survives only in restricted form.
 
 ---
 
@@ -227,7 +231,44 @@ def TwoLayerCoherence_strong (t : T) : Prop :=
 Does [schema-level](../GLOSSARY.md#compilation-and-contract) discipline guarantee [instance-level](../GLOSSARY.md#compilation-and-contract) fidelity?
 
 - **`TwoLayerCoherence` (weak):** If the compiler is injective and faithful, is the [instance-level](../GLOSSARY.md#compilation-and-contract) unit iso? Open.
-- **`TwoLayerCoherence_strong`:** If the compiler is fully faithful, is the [instance-level](../GLOSSARY.md#compilation-and-contract) unit iso? **Refuted.** A four-object counterexample exists: even full faithfulness doesn't prevent [Skolem-null witnesses](../GLOSSARY.md#migration-vocabulary) from corrupting the round-trip.
+- **`TwoLayerCoherence_strong`:** If the compiler is fully faithful, is the [instance-level](../GLOSSARY.md#compilation-and-contract) unit iso? **Refuted.** A four-object counterexample exists: even full faithfulness doesn't prevent [Skolem-null witnesses](../GLOSSARY.md#migration-vocabulary) from corrupting the round-trip. The witness lives in `M6Counter.lean`.
+
+---
+
+## `M6Counter.lean` and `M2Counter.lean` — The Counterexamples
+
+Two of the conjectures in `DomainSpec.lean` are not just open — they are **false in their unrestricted form**, and these two files supply the witnesses. Both rest on a single shared setup.
+
+### The shared four-object setup
+
+```
+L1 := Discrete (Fin 2)            -- two isolated objects a₁, b₁
+L2Obj := {a, b}  with one non-identity arrow  f : a → b
+Δ : L1 ⥤ L2Obj                    -- a ↦ a, b ↦ b (the inclusion)
+```
+
+`Δ` is faithful and injective on objects (in fact it is the inclusion of a discrete subcategory). The only structural difference between `L1` and `L2` is the single arrow `f`, which `L1` lacks. That single missing arrow is enough to break both conjectures.
+
+The setup is defined in `M6Counter.lean`; `M2Counter.lean` imports it.
+
+### `M6Counter.lean` — refutes M6 strong
+
+The strong form of [M6](../GLOSSARY.md#3--internal-milestone-labels) (`TwoLayerCoherence_strong` in `DomainSpec.lean`) claims: if Δ is fully faithful, then the unit of the [instance-level](../GLOSSARY.md#compilation-and-contract) left adjunction is iso. `M6Counter.lean` exhibits a presheaf on `L1` whose unit fails to be iso under the four-object Δ — even though Δ is faithful and discrete-injective. The [Skolem witnesses](../GLOSSARY.md#migration-vocabulary) introduced when extending across the missing arrow `f` cannot be undone by pull-back.
+
+### `M2Counter.lean` — refutes unrestricted M2
+
+The headline theorem:
+
+```
+theorem M2_unrestricted_false :
+    ¬ (∀ {C₁ C₂ : Type} [SmallCategory C₁] [SmallCategory C₂]
+         (F : C₁ ⥤ C₂) (b : C₂),
+         Functor.IsRepresentable (F.op ⋙ yoneda.obj b))
+```
+
+The presheaf `P_b := Δ.op ⋙ yoneda.obj L2Obj.b` is nontrivial at *both* `a₁` and `b₁` (its values are `Hom(a, b) ≃ Unit` and `Hom(b, b) ≃ Unit`). But `L1` is discrete — there are no cross hom-sets — so no single object of `L1` can represent `P_b`. The case-split on the candidate representing object lands in `no_hom_b₁_a₁` or `no_hom_a₁_b₁`, both impossible.
+
+This means the [M2 conjecture](../GLOSSARY.md#3--internal-milestone-labels) as stated in full generality is false. M2 survives only when Δ is restricted (e.g., to fully faithful functors, or to functors satisfying additional density conditions); identifying the right restriction is now the open question, not whether the unrestricted form holds.
 
 ---
 
@@ -258,6 +299,17 @@ Does [schema-level](../GLOSSARY.md#compilation-and-contract) discipline guarante
 │ • M2 (Conjecture): schema-level adjunction             │
 │ • M6 (Conjecture + Refutation): schema doesn't imply   │
 │   instance fidelity; strong form is false              │
+└─────────────────────────────────────────────────────────┘
+        ↑ refuted in unrestricted form by
+┌─ M6Counter.lean ───────────────────────────────────────┐
+│ • Four-object setup (L1 discrete, L2 with one arrow f) │
+│ • Witnesses M6_strong false: fully faithful Δ does     │
+│   not force the instance-level unit to be iso          │
+└─────────────────────────────────────────────────────────┘
+┌─ M2Counter.lean ───────────────────────────────────────┐
+│ • Imports M6Counter's four-object setup                │
+│ • theorem M2_unrestricted_false: no schema-level right │
+│   adjoint exists in general                            │
 └─────────────────────────────────────────────────────────┘
 ```
 
@@ -311,10 +363,12 @@ The results in `Fractal.lean` and `FractalOP.lean` are the *positive answer*: un
 | FullyFaithful → fractal | Fractal.lean | **Proved** | Sufficient condition |
 | Four-level hierarchy | FractalOP.lean | Defined | Refines M2 boundary |
 | LanFaithful / InstanceFractal / SchemaFractal / Fractal | FractalOP.lean | **Proved** (identity, equiv, fully FF) | Graduated cases |
-| Schema adjunction (M2) | DomainSpec.lean | **Conjectural** | Open question |
+| Schema adjunction (M2), unrestricted | DomainSpec.lean | **Refuted** in M2Counter.lean | Open only in restricted form |
 | Instance adjunctions (M5) | DomainSpec.lean | **Free in theory, `sorry` in file** | Mathlib wiring not yet done |
 | Weak coherence (M6) | DomainSpec.lean | **Conjectural** | Open question |
-| Strong coherence (M6_strong) | DomainSpec.lean | **Refuted** | Counterexample exists |
+| Strong coherence (M6_strong) | DomainSpec.lean | **Refuted** in M6Counter.lean | Four-object counterexample |
+| Four-object setup | M6Counter.lean | Defined | Shared base for M6Counter and M2Counter |
+| `M2_unrestricted_false` | M2Counter.lean | **Proved** | Refutation of unrestricted M2 |
 
 ---
 

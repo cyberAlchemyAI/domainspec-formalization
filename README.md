@@ -5,7 +5,7 @@ kind: meta
 status: conjectural
 authors: [Boscaro, Rondelli]
 created: 2026-04-25
-updated: 2026-04-29
+updated: 2026-05-04
 edges: []
 ---
 
@@ -27,7 +27,7 @@ Validate if what we have here is solid math or just prose with math words. We ar
 
 If the framework is sound, these are the open problems that remain:
 
-- **[M2](GLOSSARY.md#3--internal-milestone-labels)** — Does a right adjoint to $\Delta$ exist at the schema level? Equivalently, is $\mathrm{Hom}_{\mathcal{L}_2}(\Delta(-), b)$ representable for every $b$? This is the condition under which schema [residue](GLOSSARY.md#residue) is even well-defined.
+- **[M2-restricted](GLOSSARY.md#3--internal-milestone-labels)** — The unrestricted M2 is already refuted (see `M2Counter.lean`): $\mathrm{Hom}_{\mathcal{L}_2}(\Delta(-), b)$ is not representable for every $b$ in general. The open question is which restriction on $\Delta$ (fully faithful? dense? pointwise codense?) recovers representability and makes schema [residue](GLOSSARY.md#residue) well-defined.
 - **[M6'](GLOSSARY.md#3--internal-milestone-labels)** — Does faithfulness of $\Delta$ force the instance-level unit $\eta^{\mathrm{ins}}_I$ to be pointwise monic for every $I$? (The strong form, M6, is already refuted — see `M6Counter.lean`.)
 - **[M6-restricted](GLOSSARY.md#3--internal-milestone-labels)** — Does injectivity + faithfulness force an iso on a reflective subcategory of $\mathbf{Set}^{\mathcal{L}_1}$?
 
@@ -36,8 +36,9 @@ If the framework is sound, these are the open problems that remain:
 **Core publication:**
 - **[Fractal.lean](./lean-formalization/Fractal.lean)** — The core definition of a [fractal functor](GLOSSARY.md#fractal-functor): `F` is fractal if the unit of the canonical adjunction `Lan_F ⊣ F*` (between `C ⥤ Type v` and `D ⥤ Type v`) is componentwise monic. Three implications: `fractal_iff_lan_faithful` (fractal ↔ `Lan_F` faithful), `fractal_id` (the identity functor is fractal), and `fractal_of_fullyFaithful` (every fully-faithful functor is fractal).
 - **[FractalOP.lean](./lean-formalization/FractalOP.lean)** — A four-level hierarchy of fractal notions, from weakest to strongest: `LanFaithful` (unit componentwise monic, equivalent to `Lan_F` faithful), `InstanceFractal` (unit componentwise iso — no spurious Skolem witnesses), `SchemaFractal` (unit of an explicit adjunction `F ⊣ G` is a natural iso), and `Fractal` (both schema and instance layers iso). The hierarchy makes the [M2 conjecture](GLOSSARY.md#3--internal-milestone-labels) precise: the schema-level adjunction is an explicit argument rather than a typeclass, so its existence is never silently assumed.
-- **[M6Counter.lean](./lean-formalization/M6Counter.lean)** — Formal refutation of [M6](GLOSSARY.md#3--internal-milestone-labels) (strong): proof that schema-side discipline (injectivity + faithfulness on $\Delta$) does **not** propagate to [instance-side](GLOSSARY.md#compilation-and-contract) fidelity. The four-object counterexample, fully formalized in Lean 4. No `sorry`s.
-- **[DomainSpec.lean](./lean-formalization/DomainSpec.lean)** — The full Lean 4 formalization: the two-layer [residue](GLOSSARY.md#residue) framework and open conjectures ([M2](GLOSSARY.md#3--internal-milestone-labels), [M6'](GLOSSARY.md#3--internal-milestone-labels), [M6-restricted](GLOSSARY.md#3--internal-milestone-labels)).
+- **[M6Counter.lean](./lean-formalization/M6Counter.lean)** — Formal refutation of [M6](GLOSSARY.md#3--internal-milestone-labels) (strong): proof that schema-side discipline (injectivity + faithfulness on $\Delta$) does **not** propagate to [instance-side](GLOSSARY.md#compilation-and-contract) fidelity. The four-object counterexample (`L1 = Discrete (Fin 2)`, `L2 = {a, b, f : a → b}`, Δ the inclusion), fully formalized in Lean 4. No `sorry`s.
+- **[M2Counter.lean](./lean-formalization/M2Counter.lean)** — Formal refutation of unrestricted [M2](GLOSSARY.md#3--internal-milestone-labels): theorem `M2_unrestricted_false` shows that the presheaf $\Delta^{\mathrm{op}} \cdot \mathrm{y}(b)$ is not representable in general — reusing the four-object setup from `M6Counter.lean`. The schema-level adjunction conjecture survives only under additional restrictions on $\Delta$.
+- **[DomainSpec.lean](./lean-formalization/DomainSpec.lean)** — The full Lean 4 formalization: the two-layer [residue](GLOSSARY.md#residue) framework and open conjectures ([M2-restricted](GLOSSARY.md#3--internal-milestone-labels), [M6'](GLOSSARY.md#3--internal-milestone-labels), [M6-restricted](GLOSSARY.md#3--internal-milestone-labels)).
 
 **Mathematical framework:**
 - **[docs/domainspec-two-layer-framework.md](./docs/domainspec-two-layer-framework.md)** — The two-layer [residue](GLOSSARY.md#residue) formalization. Why [schema-level](GLOSSARY.md#compilation-and-contract) and [instance-level](GLOSSARY.md#compilation-and-contract) translation leaks exist independently, and what conjectures remain open.
@@ -51,7 +52,7 @@ If the framework is sound, these are the open problems that remain:
 ## Building
 
 ```bash
-cd lean-formalization
+cd lean-formalization/files
 lake build
 ```
 

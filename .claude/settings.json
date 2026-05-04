@@ -1,4 +1,13 @@
 {
+  "permissions": {
+    "allow": [
+      "Bash(grep -E \"\\(DomainSpec|Fractal|FractalOP|M2Counter|M6Counter\\)\\\\.olean$\")",
+      "Bash(echo \"exit:$?\")",
+      "Bash(sed -n '155,165p' /Users/victorboscaro/domainspec-theorem/docs/domainspec-two-layer-framework.md)",
+      "Bash(sed -n '178,186p' /Users/victorboscaro/domainspec-theorem/docs/categorical-extraction-schema.md)",
+      "Bash(sed -n '295,310p' /Users/victorboscaro/domainspec-theorem/docs/paper.md)"
+    ]
+  },
   "hooks": {
     "PreToolUse": [
       {

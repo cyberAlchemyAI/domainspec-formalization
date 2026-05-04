@@ -65,7 +65,7 @@ Terms specific to this project. Where the name is custom or borrowed, a note tra
 
 ### Residue
 
-- **Schema residue** — *conditional on M2.* If a right adjoint $\Delta \dashv G$ exists at the schema level (M2 — currently open), schema residue is the failure of the unit $\eta^{\mathrm{sch}}_v : v \to G(\Delta(v))$ to be iso. Measures: domain concepts that have no faithful shadow in the artifact type system. Until M2 is resolved, this is a *prospective* definition — the concept is only well-defined once $G$ is exhibited.
+- **Schema residue** — *conditional on a restricted form of M2.* If a right adjoint $\Delta \dashv G$ exists at the schema level, schema residue is the failure of the unit $\eta^{\mathrm{sch}}_v : v \to G(\Delta(v))$ to be iso. Measures: domain concepts that have no faithful shadow in the artifact type system. The unrestricted M2 conjecture (existence of $G$ for arbitrary $\Delta$) is **refuted** in `M2Counter.lean`; the open question is which restriction on $\Delta$ recovers representability. Until that restricted form is settled, this is a *prospective* definition — the concept is only well-defined once $G$ is exhibited.
 
 - **Instance residue** — failure of $\eta^{\mathrm{ins}}_I : I \Rightarrow \Delta^*(\Sigma_\Delta(I))$ to be iso. Measures: domain data lost (or hallucinated) when populated, compiled, and read back.
 
@@ -106,7 +106,8 @@ The M-numbers and T-numbers are project-internal labels for specific claims in t
 | Label | Claim | Status | Location |
 |---|---|---|---|
 | **M1** | Cocontinuity of $\Delta$ at the schema level | Framework assumption (free from Mathlib once $\Delta$ is declared a left Kan extension) | `DomainSpec.lean` § "M1 — Cocontinuity is a theorem at the schema level" (comment block only) |
-| **M2** | Schema-level right adjoint exists; equivalently, $\mathrm{Hom}_{\mathcal{L}_2}(\Delta(-), b)$ is representable for every $b$ | **Conjectural (open)** | `DomainSpec.lean` `SchemaAdjunctionConjecture` |
+| **M2 (unrestricted)** | Schema-level right adjoint exists for arbitrary $\Delta$; equivalently, $\mathrm{Hom}_{\mathcal{L}_2}(\Delta(-), b)$ is representable for every $b$ | **Refuted** (formalized) | `M2Counter.lean` `M2_unrestricted_false` (proven, no `sorry`) |
+| **M2 (restricted)** | Same statement under a restriction on $\Delta$ (fully faithful / dense / pointwise codense — to be identified) | **Conjectural (open)** | `DomainSpec.lean` `SchemaAdjunctionConjecture` (currently states the unrestricted form) |
 | **M3** | $\Delta$ is injective on objects and faithful | Framework assumption | `DomainSpec.lean` `IsInjectiveOnObjects`, `Functor.Faithful` typeclass arguments |
 | **M4** | Temporal indexing: a join-semilattice $T$ of times, with $\mathcal{L}_1, \mathcal{L}_2 : T \to \mathbf{Cat}$ | Framework assumption | `DomainSpec.lean` `variable {T : Type*} [SemilatticeSup T] [Category T]` |
 | **M5** | Instance-level adjunction triple $\Sigma_\Delta \dashv \Delta^* \dashv \Pi_\Delta$ | Classical theorem (Mac Lane); **`sorry` in our Lean file** | `DomainSpec.lean` `Δ_sigma`, `Δ_pi`, `InstanceLeftAdjunction`, `InstanceRightAdjunction` (all `sorry`) |
