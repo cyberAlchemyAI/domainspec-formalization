@@ -13,8 +13,7 @@ _residue/
 agents/
 children/
 theorem/
-categorical-extraction-schema.md
-categorical-extraction-schema
-ontology-conventions
+categorical-extraction-schema*
+ontology-conventions*
 /.claude
 /close-session
