@@ -5,51 +5,38 @@ kind: meta
 status: conjectural
 authors: [Boscaro, Rondelli]
 created: 2026-04-25
-updated: 2026-05-04
+updated: 2026-05-07
 edges: []
 ---
 
 # DomainSpec Theorem
 
-A formal mathematical framework for understanding information preservation in compilation and translation.
+Every translation leaves something behind. We're trying to find out when it doesn't.
 
-## Origin
+## The itch
 
-We started by building a system framework to help understand how systems explain themselves — a 7-layer model from domain through code to governance. The key insight: the **compilation step** from domain formalization (L1) to code (L2) is where information leaks.
+We started somewhere else — a system-design framework about how software explains itself, from domain down to code. When code is implemented from domain knowledge, information can leak. Two different domain entities can be merged into one. A business rule can be missed. A nuance the practitioners carry in their heads can fail to survive the trip into a schema. The compilation step — domain to code — is one of the places this happens, and it's the one we wanted to look at closely.
 
-Every translation has [residue](GLOSSARY.md#residue): what cannot be fully expressed in the target representation. *What if some translations have zero [residue](GLOSSARY.md#residue)?*
+Every translation has [residue](GLOSSARY.md#residue) — what the target representation cannot hold. A simulation never recovers the world it models. A category collapses the variation inside its labels. A teacher passes on less than they know. A compiler keeps the type system honest and lets the data drift, or the other way around.
 
-That question led to a formal mathematical model. A functor $\Delta : L_1 \to L_2$ is called **[fractal](GLOSSARY.md#fractal-functor)** if the compilation preserves all information — at both the [schema level](GLOSSARY.md#compilation-and-contract) (types) and the [instance level](GLOSSARY.md#compilation-and-contract) (data). This repository contains the framework and proofs about fractals.
+A [fractal](GLOSSARY.md#fractal-functor) is the exception. The translation from whole to part recovers the whole exactly. Residue zero. That is why fractals feel uncanny — they are the one case where nothing leaks.
 
-## Goal
+So: *which translations are fractal?* That question turned into math, and the math turned into Lean.
 
-Validate if what we have here is solid math or just prose with math words. We are not mathematicians, just engineers with an itch for abstract thought, rigor and maybe a well calibrated intuition. We want your help to prove if we are wrong or not.
+## What we want from you
 
-If the framework is sound, these are the open problems that remain:
+We are not mathematicians. We are engineers with an itch for abstract thought, some rigor, and maybe a well-calibrated intuition. We want to know whether what's here is solid math or prose dressed up in math words.
 
-- **[M2-restricted](GLOSSARY.md#3--internal-milestone-labels)** — The unrestricted M2 is already refuted (see `M2Counter.lean`): $\mathrm{Hom}_{\mathcal{L}_2}(\Delta(-), b)$ is not representable for every $b$ in general. The open question is which restriction on $\Delta$ (fully faithful? dense? pointwise codense?) recovers representability and makes schema [residue](GLOSSARY.md#residue) well-defined.
-- **[M6'](GLOSSARY.md#3--internal-milestone-labels)** — Does faithfulness of $\Delta$ force the instance-level unit $\eta^{\mathrm{ins}}_I$ to be pointwise monic for every $I$? (The strong form, M6, is already refuted — see `M6Counter.lean`.)
-- **[M6-restricted](GLOSSARY.md#3--internal-milestone-labels)** — Does injectivity + faithfulness force an iso on a reflective subcategory of $\mathbf{Set}^{\mathcal{L}_1}$?
+Tell us we're wrong. Or tell us we're not.
 
 ## What's here
 
-**Core publication:**
-- **[Fractal.lean](./lean-formalization/Fractal.lean)** — The core definition of a [fractal functor](GLOSSARY.md#fractal-functor): `F` is fractal if the unit of the canonical adjunction `Lan_F ⊣ F*` (between `C ⥤ Type v` and `D ⥤ Type v`) is componentwise monic. Three implications: `fractal_iff_lan_faithful` (fractal ↔ `Lan_F` faithful), `fractal_id` (the identity functor is fractal), and `fractal_of_fullyFaithful` (every fully-faithful functor is fractal).
-- **[FractalOP.lean](./lean-formalization/FractalOP.lean)** — A four-level hierarchy of fractal notions, from weakest to strongest: `LanFaithful` (unit componentwise monic, equivalent to `Lan_F` faithful), `InstanceFractal` (unit componentwise iso — no spurious Skolem witnesses), `SchemaFractal` (unit of an explicit adjunction `F ⊣ G` is a natural iso), and `Fractal` (both schema and instance layers iso). The hierarchy makes the [M2 conjecture](GLOSSARY.md#3--internal-milestone-labels) precise: the schema-level adjunction is an explicit argument rather than a typeclass, so its existence is never silently assumed.
-- **[M6Counter.lean](./lean-formalization/M6Counter.lean)** — Formal refutation of [M6](GLOSSARY.md#3--internal-milestone-labels) (strong): proof that schema-side discipline (injectivity + faithfulness on $\Delta$) does **not** propagate to [instance-side](GLOSSARY.md#compilation-and-contract) fidelity. The four-object counterexample (`L1 = Discrete (Fin 2)`, `L2 = {a, b, f : a → b}`, Δ the inclusion), fully formalized in Lean 4. No `sorry`s.
-- **[M2Counter.lean](./lean-formalization/M2Counter.lean)** — Formal refutation of unrestricted [M2](GLOSSARY.md#3--internal-milestone-labels): theorem `M2_unrestricted_false` shows that the presheaf $\Delta^{\mathrm{op}} \cdot \mathrm{y}(b)$ is not representable in general — reusing the four-object setup from `M6Counter.lean`. The schema-level adjunction conjecture survives only under additional restrictions on $\Delta$.
-- **[DomainSpec.lean](./lean-formalization/DomainSpec.lean)** — The full Lean 4 formalization: the two-layer [residue](GLOSSARY.md#residue) framework and open conjectures ([M2-restricted](GLOSSARY.md#3--internal-milestone-labels), [M6'](GLOSSARY.md#3--internal-milestone-labels), [M6-restricted](GLOSSARY.md#3--internal-milestone-labels)).
+- **The story** — [docs/domainspec-two-layer-framework.md](./docs/domainspec-two-layer-framework.md) is the long version: why translation leaks at two independent levels (the contract and the data), and what's still open.
+- **Where it came from** — [docs/meta-layers-reference.md](./docs/meta-layers-reference.md) is the system-design framework that started this.
+- **The proofs** — [lean-formalization/](./lean-formalization/) holds the Lean 4 formalization. The headline files are `Fractal.lean` (the core definition), `FractalOP.lean` (a four-level hierarchy from weakest to strongest), and the two refutations: `M2Counter.lean` and `M6Counter.lean`. Status of each open conjecture lives in the framework doc, not here.
+- **A picture** — [visualization/fractals.html](./visualization/fractals.html). Because some of this is easier to see than to read.
 
-**Mathematical framework:**
-- **[docs/domainspec-two-layer-framework.md](./docs/domainspec-two-layer-framework.md)** — The two-layer [residue](GLOSSARY.md#residue) formalization. Why [schema-level](GLOSSARY.md#compilation-and-contract) and [instance-level](GLOSSARY.md#compilation-and-contract) translation leaks exist independently, and what conjectures remain open.
-
-**Background & context:**
-- **[docs/meta-layers-reference.md](./docs/meta-layers-reference.md)** — The system-design framework that motivated this work. How the 7-layer model connects to the mathematical questions.
-
-**Fractal visualization:**
-- **[visualization/fractals.html](./visualization/fractals.html)** — A cool visualization.
-
-## Building
+## Building the Lean files
 
 ```bash
 cd lean-formalization/files
@@ -60,7 +47,7 @@ Requires [Lean 4](https://lean-lang.org/) and [Mathlib](https://github.com/leanp
 
 ## Authors
 
-Victor Boscaro & Vladimir Rondelli
+Victor Boscaro & Vladimir Rondelli — fifteen years of conversations about simulations, fractals, categorizations, and knowledge transfer, finally given a shape we could check.
 
 ## License
 
