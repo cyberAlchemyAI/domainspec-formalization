@@ -187,7 +187,7 @@ For each $b \in \mathcal{L}_2$, consider the presheaf
 $$P_b := \mathrm{Hom}_{\mathcal{L}_2}(\Delta(-), b) : \mathcal{L}_1^{\mathrm{op}} \to \mathbf{Set}.$$
 **Conjecture ([M2](../GLOSSARY.md#3--internal-milestone-labels)).** $P_b$ is representable for every $b$. Equivalently, there exists $G(b) \in \mathcal{L}_1$ and a natural isomorphism
 $$\mathrm{Hom}_{\mathcal{L}_2}(\Delta(a), b) \;\cong\; \mathrm{Hom}_{\mathcal{L}_1}(a, G(b)).$$
-By Yoneda + naturality in $b$, the assignment $b \mapsto G(b)$ extends to a functor $G : \mathcal{L}_2 \to \mathcal{L}_1$, and $\Delta \dashv G$ at the [schema level](../GLOSSARY.md#compilation-and-contract). The unit $\eta^{\mathrm{sch}} : 1_{\mathcal{L}_1} \Rightarrow G \circ \Delta$ measures **[schema residue](../GLOSSARY.md#residue)**.
+By Yoneda + naturality in $b$, the assignment $b \mapsto G(b)$ extends to a functor $G : \mathcal{L}_2 \to \mathcal{L}_1$, and $\Delta \dashv G$ at the [schema level](../GLOSSARY.md#compilation-and-contract). The unit $\eta^{\mathrm{sch}} : 1_{\mathcal{L}_1} \Rightarrow G \circ \Delta$ measures **[schema residue](../GLOSSARY.md#residue)**. (Stated as [`SchemaAdjunctionConjecture`](../lean-formalization/DomainSpec.lean#L294) in `DomainSpec.lean`; unrestricted form refuted in [`M2Counter.lean`](../lean-formalization/M2Counter.lean#L54).)
 
 ### 3.4 Instance-level Data Migration
 
@@ -197,7 +197,7 @@ The schema functor $\Delta$ induces, by precomposition, the **[pull-back](../GLO
 $$\Delta^* : \mathbf{Set}^{\mathcal{L}_2} \to \mathbf{Set}^{\mathcal{L}_1}, \qquad J \mapsto J \circ \Delta.$$
 Because $\mathbf{Set}$ is complete and cocomplete, **$\Delta^*$ admits both adjoints**:
 $$\Sigma_\Delta \;\dashv\; \Delta^* \;\dashv\; \Pi_\Delta,$$
-where $\Sigma_\Delta = \mathrm{Lan}_\Delta$ and $\Pi_\Delta = \mathrm{Ran}_\Delta$.
+where $\Sigma_\Delta = \mathrm{Lan}_\Delta$ and $\Pi_\Delta = \mathrm{Ran}_\Delta$. (Formalized as [`Δ_sigma`](../lean-formalization/DomainSpec.lean#L105), [`Δ_pullback`](../lean-formalization/DomainSpec.lean#L98), [`Δ_pi`](../lean-formalization/DomainSpec.lean#L108) in `DomainSpec.lean`.)
 
 The two [push-forward](../GLOSSARY.md#migration-vocabulary)s have different generative semantics:
 - $\Sigma_\Delta(I)$ is the **most efficient** populated artifact state generated from a populated domain state $I$. Where the contract leaves a slot the domain doesn't fill, $\Sigma_\Delta$ inserts a fresh witness.
@@ -230,7 +230,7 @@ Objects of $(\Delta \downarrow b)$: $(a, f)$ and $(b, \mathrm{id}_b)$.
 
 Morphisms of $(\Delta \downarrow b)$: from $(a, f)$ to $(b, \mathrm{id}_b)$ requires a morphism in $\mathcal{L}_1$ between $a$ and $b$. None exists. The comma is discrete on two objects.
 
-Therefore $\Sigma_\Delta I (b) = I(a) \sqcup I(b) = \{\ast\} \sqcup \{\ast\}$, a two-element set. The unit $\eta^{\mathrm{ins}}_{I, b} : \{\ast\} \to \{\ast, \ast\}$ is injective but not surjective. **Not iso.** ∎
+Therefore $\Sigma_\Delta I (b) = I(a) \sqcup I(b) = \{\ast\} \sqcup \{\ast\}$, a two-element set. The unit $\eta^{\mathrm{ins}}_{I, b} : \{\ast\} \to \{\ast, \ast\}$ is injective but not surjective. **Not iso.** ∎ (Formalized as [`m6_strong_refuted`](../lean-formalization/M6Counter.lean#L125) in `M6Counter.lean`, no `sorry`.)
 
 The intuition fails because $\Sigma_\Delta$ generates fresh witnesses whenever $\mathcal{L}_2$ contains a morphism not in the image of $\Delta$, and faithfulness is silent on that condition.
 
@@ -253,6 +253,8 @@ This is more useful operationally if it lands: real system instances are not arb
 ## Section 4 — The Lean Formalization
 
 See [DomainSpec.lean](../lean-formalization/DomainSpec.lean) for the full formal setup and conjecture statements in Lean 4.
+
+A finer independence result also has a direct Lean proof: [`s2_and_s3_decoupled`](../lean-formalization/S2VsS3Counter.lean#L158) in `S2VsS3Counter.lean` proves that `S2UnitFractal` (unit of `Lan_F ⊣ F*` is iso) and `S3UnitFractal` (unit of `F* ⊣ Ran_F` is iso) are logically independent — both are instance-layer conditions, and neither implies the other. The schema-vs-instance independence is separately established by the M6 Strong refutation (`m6_strong_refuted` in `M6Counter.lean`).
 
 The formal commitment:
 - $\Delta : \mathcal{L}_1 \to \mathcal{L}_2$ is a left Kan extension
@@ -302,7 +304,7 @@ The wall is not a weakness. It is the framework's honest accounting of where for
 
 When physics sought a mathematical language for preservation, it did not measure substances; it measured invariance. Emmy Noether's theorem established the paramount epistemic law of modern mechanics: where there is a continuous symmetry, there is a conserved quantity. Conservation is not a feature of matter — it is the shadow of a symmetry the equations already obey. DomainSpec inhabits a discrete universe, but the move transfers. 
 
-There are two symmetries, not one. The hope was that the first would buy the second. Four objects suffice to refute it. The two laws do not reduce.
+There are two symmetries, not one. The hope was that the first would buy the second. Four objects suffice to refute it ([`m6_strong_refuted`](../lean-formalization/M6Counter.lean#L125)). The two laws do not reduce — proved directly in [`s2_and_s3_decoupled`](../lean-formalization/S2VsS3Counter.lean#L158).
 
 A system with two symmetries is not required, by any law, to have one reduce to the other. Sometimes one does — energy and momentum in classical mechanics share a deeper symmetry. Sometimes neither does. DomainSpec is the second case.
 
@@ -321,6 +323,7 @@ Vladimir and I have a habit of starting conversations that take years to finish.
 
 ## See also
 
+- [Paper](./paper.md) — The formal companion: same mathematics in theorem/proof style, with Lean 4 links for every proved claim.
 - [Meta-Layers Framework](./meta-layers-reference.md) — The system-design motivation
 - [Lean4 Guide](./lean-formalization-guide.md) — The explanation of the formalizations made by this framework
 - [Glossary](../GLOSSARY.md) — Definitions of all terms, milestone labels (M-numbers, T-numbers), and literature mapping
@@ -349,7 +352,7 @@ Vladimir and I have a habit of starting conversations that take years to finish.
 ### Database theory — Skolem nulls and incomplete information
 
 - Imieliński, Tomasz, and Witold Lipski. "Incomplete Information in Relational Databases." *Journal of the ACM* 31.4 (1984): 761–791. — *Origin of the labeled-null treatment that $\Sigma_\Delta$ is the categorical analogue of.*
-- Abiteboul, Serge, Richard Hull, and Victor Vianu. *Foundations of Databases*. Addison-Wesley, 1995. — *Standard reference for the chase and tuple-generating dependencies that motivate the "most efficient vs. most conservative" reading.*
+- Abiteboul, Serge, Richard Hull, and Victor Vianu. *Foundations of Databases*. Addison-Wesley, 1995. — *Standard reference for relational database theory; the "most efficient vs. most conservative" reading of $\Sigma_\Delta$ vs $\Pi_\Delta$ (§2.3, §3.4) is the categorical analogue of the universal/existential semantics for incomplete information developed therein.*
 
 ### Lean 4 / Mathlib formalization
 

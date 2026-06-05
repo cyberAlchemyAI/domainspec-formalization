@@ -15,11 +15,19 @@ This document describes what lives in `Fractal.lean` and `DomainSpec.lean`. It a
 
 ## Overview
 
-Five files, five purposes:
+Nine files, organized by purpose:
 
 **`Fractal.lean`** — The proven kernel. Defines what a [fractal functor](../GLOSSARY.md#fractal-functor) is, gives an equivalent characterization (via faithfulness of the left Kan extension), and discharges two cases: the identity is [fractal](../GLOSSARY.md#fractal-functor), and every fully faithful functor is [fractal](../GLOSSARY.md#fractal-functor). Every claim discharged. No sorries.
 
 **`FractalOP.lean`** — The refined hierarchy. Splits the single notion from `Fractal.lean` into four graduated levels — `LanFaithful`, `InstanceFractal`, `SchemaFractal`, and `Fractal` — so that the [M2 conjecture](../GLOSSARY.md#3--internal-milestone-labels) is captured precisely. The schema-level definition takes an explicit adjunction argument rather than a typeclass, preventing typeclass inference from silently assuming the conjecture.
+
+**`S3Fractal.lean`** — Two parallel unit-iso conditions. Defines `S2UnitFractal F` (unit of `Lan_F ⊣ F*` is iso — the left-Kan adjunction) and `S3UnitFractal F` (unit of `F* ⊣ Ran_F` is iso — the right-Kan adjunction). Both are instance-layer properties; they are independent of each other. Proves that every fully faithful functor is S2 unit-fractal.
+
+**`S2VsS3Counter.lean`** — Left-Kan vs right-Kan unit-iso independence. Exhibits a single functor `F : Discrete (Fin 1) ⥤ Discrete (Fin 2)` that satisfies `S2UnitFractal` (because `F` is fully faithful) but fails `S3UnitFractal` (the unit at an object outside the image of `F` collapses `Bool` to `PUnit`). The headline: `s2_and_s3_decoupled`. Note: this is *not* the schema-vs-instance independence result (that is proved via M6 Strong refutation in `M6Counter.lean`); it is the finer claim that, within the instance layer, the left-Kan and right-Kan unit conditions are themselves independent.
+
+**`Cofractal.lean`** — Counit-side duals. Defines the counit analogues of `LanFaithful`, `InstanceFractal`, and `SchemaFractal`: `LanCofaithful`, `InstanceCofractal`, and `SchemaCofractal`. Dual to `FractalOP.lean` but independent: a functor can satisfy the unit-side conditions without satisfying the counit-side ones.
+
+**`CounitCounter.lean`** — Unit/counit decoupling. Constructs a functor `Finc` that is `InstanceFractal` (unit componentwise iso) but fails `InstanceCofractal` (counit not iso). Proves `InstanceFractal Finc ∧ ¬ InstanceCofractal Finc`.
 
 **`DomainSpec.lean`** — The research landscape. The full two-layer [residue](../GLOSSARY.md#residue) framework formalized in Lean: all the definitions, assumptions, the free adjunctions that exist, and the conjectures still open. It shows where the results in `Fractal.lean` and `FractalOP.lean` live, and what remains to be proved.
 
@@ -292,6 +300,32 @@ This means the [M2 conjecture](../GLOSSARY.md#3--internal-milestone-labels) as s
         └─ both illustrate the ideal case of
            DomainSpec.lean
 
+┌─ S3Fractal.lean ───────────────────────────────────────┐
+│ • S2UnitFractal: unit of Lan_F ⊣ F* is iso            │
+│ • S3UnitFractal: unit of F* ⊣ Ran_F is iso            │
+│ • Fully faithful → S2 (proved)                         │
+└─────────────────────────────────────────────────────────┘
+        ↓ decoupling proved by
+┌─ S2VsS3Counter.lean ───────────────────────────────────┐
+│ • Witness: F = Discrete(Fin 1) ⥤ Discrete(Fin 2)      │
+│ • S2UnitFractal F holds (F fully faithful)             │
+│ • S3UnitFractal F fails (unit collapses Bool → PUnit   │
+│   at object outside image of F)                        │
+│ • s2_and_s3_decoupled: the two conditions are          │
+│   independent — the "two symmetries" in the title      │
+└─────────────────────────────────────────────────────────┘
+
+┌─ Cofractal.lean ───────────────────────────────────────┐
+│ • Counit duals: LanCofaithful, InstanceCofractal,      │
+│   SchemaCofractal                                      │
+│ • Orthogonal to unit-side hierarchy                    │
+└─────────────────────────────────────────────────────────┘
+        ↓ decoupling proved by
+┌─ CounitCounter.lean ───────────────────────────────────┐
+│ • Finc is InstanceFractal but ¬InstanceCofractal       │
+│ • Unit-iso and counit-iso are independent              │
+└─────────────────────────────────────────────────────────┘
+
 ┌─ DomainSpec.lean ──────────────────────────────────────┐
 │ • Framework: two layers, two adjunctions               │
 │ • M5: instance-level adjunctions, free in theory,      │
@@ -369,6 +403,12 @@ The results in `Fractal.lean` and `FractalOP.lean` are the *positive answer*: un
 | Strong coherence (M6_strong) | DomainSpec.lean | **Refuted** in M6Counter.lean | Four-object counterexample |
 | Four-object setup | M6Counter.lean | Defined | Shared base for M6Counter and M2Counter |
 | `M2_unrestricted_false` | M2Counter.lean | **Proved** | Refutation of unrestricted M2 |
+| S2UnitFractal definition | S3Fractal.lean | Defined | Left-Kan unit-iso condition |
+| S3UnitFractal definition | S3Fractal.lean | Defined | Right-Kan unit-iso condition |
+| Fully faithful → S2UnitFractal | S3Fractal.lean | **Proved** | `s2UnitFractal_of_fullyFaithful` |
+| S2 and S3 are decoupled | S2VsS3Counter.lean | **Proved** (no `sorry`) | `s2_and_s3_decoupled` — the "two independent symmetries" |
+| Cofractal hierarchy (3 levels) | Cofractal.lean | Defined | Counit-side duals of FractalOP |
+| InstanceFractal ∧ ¬InstanceCofractal | CounitCounter.lean | **Proved** | Unit/counit independence |
 
 ---
 

@@ -32,8 +32,10 @@ Tell us we're wrong. Or tell us we're not.
 ## What's here
 
 - **The story** — [docs/domainspec-two-layer-framework.md](./docs/domainspec-two-layer-framework.md) is the long version: why translation leaks at two independent levels (the contract and the data), and what's still open.
+- **The paper** — [docs/paper.md](./docs/paper.md) is the formal companion: definitions, theorems, refutations (M6 Strong and M2 unrestricted, both in Lean 4), and the fractal hierarchy. Same mathematics as the story, no prose.
 - **Where it came from** — [docs/meta-layers-reference.md](./docs/meta-layers-reference.md) is the system-design framework that started this.
-- **The proofs** — [lean-formalization/](./lean-formalization/) holds the Lean 4 formalization. The headline files are `Fractal.lean` (the core definition), `FractalOP.lean` (a four-level hierarchy from weakest to strongest), and the two refutations: `M2Counter.lean` and `M6Counter.lean`. Status of each open conjecture lives in the framework doc, not here.
+- **The proofs** — [lean-formalization/](./lean-formalization/) holds the Lean 4 formalization. Core files: `Fractal.lean` (the fractal definition), `FractalOP.lean` (four-level hierarchy from weakest to strongest), `S3Fractal.lean` and `S2VsS3Counter.lean` (two-layer independence proved: S2 and S3 unit-iso conditions are decoupled), `Cofractal.lean` and `CounitCounter.lean` (counit-side duals and their decoupling from unit-side), and the milestone refutations `M2Counter.lean` and `M6Counter.lean`. Status of each open conjecture lives in the framework doc.
+- **Reading the code** — [docs/lean-formalization-guide.md](./docs/lean-formalization-guide.md) maps each Lean file to its mathematical concept and tracks the proof status of every result.
 - **A picture** — [visualization/fractals.html](./visualization/fractals.html). Because some of this is easier to see than to read.
 
 ## Building the Lean files

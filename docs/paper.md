@@ -35,7 +35,7 @@ We refer to the formal framework developed here — the two-layer categorical se
 
 - **Two-layer adjunction structure.** The precomposition functor $\Delta^* : \mathbf{Set}^{\mathcal{L}_2} \to \mathbf{Set}^{\mathcal{L}_1}$ admits both a left Kan extension $\Sigma_\Delta = \mathrm{Lan}_\Delta$ and a right Kan extension $\Pi_\Delta = \mathrm{Ran}_\Delta$, giving the triple $\Sigma_\Delta \dashv \Delta^* \dashv \Pi_\Delta$ unconditionally. The unit $\eta^{\mathrm{ins}}_I : I \Rightarrow \Delta^*(\Sigma_\Delta I)$ is the *instance residue* — it exists for every $I$ without any hypothesis on $\Delta$.
 
-- **Schema-level residue (conditional, M2-restricted).** A schema residue $\eta^{\mathrm{sch}} : \mathrm{id}_{\mathcal{L}_1} \Rightarrow G \circ \Delta$ requires a right adjoint $G : \mathcal{L}_2 \to \mathcal{L}_1$, which exists iff $\mathrm{Hom}_{\mathcal{L}_2}(\Delta(-), b)$ is representable for every $b \in \mathcal{L}_2$. The unrestricted form of this claim is **refuted**: a four-object counterexample (`L1 = Discrete (Fin 2)`, `L2 = {a, b, f}`, $\Delta$ the inclusion) breaks representability at $b$, formalized in `M2Counter.lean` as `M2_unrestricted_false`. The open question is which restriction on $\Delta$ recovers representability — call this conjecture M2-restricted.
+- **Schema-level residue (conditional, M2-restricted).** A schema residue $\eta^{\mathrm{sch}} : \mathrm{id}_{\mathcal{L}_1} \Rightarrow G \circ \Delta$ requires a right adjoint $G : \mathcal{L}_2 \to \mathcal{L}_1$, which exists iff $\mathrm{Hom}_{\mathcal{L}_2}(\Delta(-), b)$ is representable for every $b \in \mathcal{L}_2$. The unrestricted form of this claim is **refuted**: a four-object counterexample (`L1 = Discrete (Fin 2)`, `L2 = {a, b, f}`, $\Delta$ the inclusion) breaks representability at $b$, formalized in [`M2Counter.lean`](../lean-formalization/M2Counter.lean) as [`M2_unrestricted_false`](../lean-formalization/M2Counter.lean#L54). The open question is which restriction on $\Delta$ recovers representability — call this conjecture M2-restricted.
 
 - **Refutation of M6 Strong (Lean 4, no `sorry`).** The claim "$\Delta$ injective on objects and faithful on morphisms implies $\eta^{\mathrm{ins}}_I$ an isomorphism for every $I$" is false. A four-object counterexample suffices: $\mathcal{L}_1$ discrete on $\{a, b\}$, $\mathcal{L}_2$ adding a single morphism $f : a \to b$, $\Delta$ the inclusion, and $I$ the constant copresheaf at a singleton. The comma category $(\Delta \downarrow b)$ is discrete on two objects, so $\Sigma_\Delta I(b) = \{\ast\} \sqcup \{\ast\}$; the unit component $\eta^{\mathrm{ins}}_{I,b} : \{\ast\} \to \{\ast, \ast\}$ is injective but not surjective. The counterexample is formalized in `M6Counter.lean`.
 
@@ -128,7 +128,7 @@ whose component $\eta^{\mathrm{sch}}_v : v \to G(\Delta(v))$ measures whether th
 
 ## 5. The Fractal Hierarchy
 
-The DomainSpec framework admits a graduated classification of compilation functors according to how completely they preserve information on each of the two layers. We define four levels, from weakest to strongest, formalized in `FractalOP.lean`.
+The DomainSpec framework admits a graduated classification of compilation functors according to how completely they preserve information on each of the two layers. We define four levels, from weakest to strongest, formalized in [`FractalOP.lean`](../lean-formalization/FractalOP.lean).
 
 The hierarchy is two-dimensional. On the instance axis, $\mathrm{LanFaithful} \subseteq \mathrm{InstanceFractal}$. On an orthogonal schema axis sits $\mathrm{SchemaFractal}$, an independent (and conjectural) condition. The top of the hierarchy is the conjunction $\mathrm{Fractal} = \mathrm{SchemaFractal} \land \mathrm{InstanceFractal}$, which requires both axes to be tight simultaneously.
 
@@ -236,7 +236,7 @@ which is injective but not surjective — not an isomorphism. $\square$
 
 **Remark 6.2 (Skolem witness interpretation).** The failure has a transparent cause: the morphism $f : a \to b$ in $\mathcal{L}_2$ lies entirely outside the image of $\Delta$ on morphisms, yet it contributes a genuine object $(a, f)$ to the comma category. The left Kan extension is obligated — by the universal property of the colimit — to introduce a fresh copy of $I(a) = \{*\}$ as a Skolem witness for this unconstrained arrow. The hypotheses of M6 Strong — injectivity on objects and faithfulness — are each purely about what $\Delta$ sends objects and morphisms *to*; they say nothing about morphisms in $\mathcal{L}_2$ that are not in the image of $\Delta$.
 
-**Lean formalization.** The refutation is discharged in `M6Counter.lean` in full — no gaps, no `sorry`. The proof supplies two distinguishing values to the two summands of $\Sigma_\Delta I(b)$ and uses that distinction to detect that the unit at $b$ cannot be surjective. The top-level declaration is:
+**Lean formalization.** The refutation is discharged in [`M6Counter.lean`](../lean-formalization/M6Counter.lean) in full — no gaps, no `sorry`. The proof supplies two distinguishing values to the two summands of $\Sigma_\Delta I(b)$ and uses that distinction to detect that the unit at $b$ cannot be surjective. The top-level declaration is:
 ```lean
 theorem m6_strong_refuted : ¬ M6Strong
 ```
@@ -299,6 +299,8 @@ The instinct to ask whether the two laws reduce is older than the formalization.
 - [Glossary](../GLOSSARY.md) — Definitions of all terms, milestone labels (M-numbers, T-numbers), and literature mapping.
 - [Fractal.lean](../lean-formalization/Fractal.lean) — The proven kernel: definition of fractal functor, the faithfulness characterization, identity and fully faithful cases.
 - [FractalOP.lean](../lean-formalization/FractalOP.lean) — The four-level hierarchy: $\mathrm{LanFaithful}$, $\mathrm{InstanceFractal}$, $\mathrm{SchemaFractal}$, $\mathrm{Fractal}$ as defined in §5.
+- [S3Fractal.lean](../lean-formalization/S3Fractal.lean) — Defines `S2UnitFractal` (unit of $\mathrm{Lan}_F \dashv F^*$ is iso) and `S3UnitFractal` (unit of $F^* \dashv \mathrm{Ran}_F$ is iso) — the two canonical unit-iso conditions corresponding to the two symmetries of this paper.
+- [S2VsS3Counter.lean](../lean-formalization/S2VsS3Counter.lean) — Proves `s2_and_s3_decoupled`: a single functor satisfies S2 but fails S3, formalizing the two-layer independence claim of §6 at the level of the canonical adjunctions.
 - [M6Counter.lean](../lean-formalization/M6Counter.lean) — The four-object counterexample formalizing the refutation of M6 Strong (§6).
 - [M2Counter.lean](../lean-formalization/M2Counter.lean) — Reuses the four-object setup to refute the unrestricted form of Conjecture 4.8 (M2): theorem `M2_unrestricted_false` (§4).
 - [DomainSpec.lean](../lean-formalization/DomainSpec.lean) — The full two-layer residue framework, including the open conjectures M2, M6', and M6-restricted (§7).
