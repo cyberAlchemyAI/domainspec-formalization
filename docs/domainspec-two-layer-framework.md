@@ -19,7 +19,7 @@ Every act of representation is a translation. Every translation has a [residue](
 
 A simulation never recovers the world it models. The [residue](../GLOSSARY.md#residue) is what the model's state space cannot hold — degrees of freedom that exist in the original but have no slot in the representation. Run the simulation forward, observe the output, ask what you could reconstruct of the world from it: what cannot be reconstructed is the [residue](../GLOSSARY.md#residue). Knowledge transfer works the same way. When an expert teaches, the student receives something — but the expert had more. The gap is not random: two students from the same class can leave with the same gaps, because the gaps are also determined by what the teaching structure could not say, not just by how attentively each student listened.
 
-A categorization collapses continuous variation into discrete types. "Young," "middle-aged," "elderly" — the collapse is intentional, but the internal structure erased by each label is the [residue](../GLOSSARY.md#residue). A fractal is the exception. The translation from whole to part recovers the whole exactly — [residue](../GLOSSARY.md#residue) zero. That is why fractals feel uncanny: they are the one case where nothing leaks. Everything else does.
+A categorization collapses continuous variation into discrete types. "Young," "middle-aged," "elderly" — the collapse is intentional, but the internal structure erased by each label is the [residue](../GLOSSARY.md#residue). A [coreflective](../GLOSSARY.md#coreflective-functor) translation is the exception. The translation from whole to part recovers the whole exactly — [residue](../GLOSSARY.md#residue) zero. That is why it feels uncanny: it is the one case where nothing leaks. Everything else does. (We used to call this property "fractal," after the way a fractal's part carries the whole; the honest mathematical name is *coreflective*.)
 
 These four are instances of the same operation. This framing — the [residue](../GLOSSARY.md#residue), the translation, the gap that has structure — started as fifteen years of conversations with my friend Vladimir Rondelli, without the language to fix any of it. We talked about simulations, fractals, categorizations, knowledge transfer. We knew something connected them. We couldn't say what.
 
@@ -42,7 +42,7 @@ This document starts by introducing the high-level idea of DomainSpec Framework 
 - [Section 4 — The Lean Formalization](#section-4--the-lean-formalization) — pointer to `DomainSpec.lean` and the formal commitments
 - [§5 — Caveats: What the Two-Layer Regime Buys and What It Costs](#5--caveats-what-the-two-layer-regime-buys-and-what-it-costs) — the cost ledger
 - [§6 — The Claim B Wall](#6--the-claim-b-wall) — where formal reasoning ends and empirical practice begins
-- [Coda — Two Independent Symmetries](#coda--two-independent-symmetries) — Noether's lens, the four registers, the fractal as exception
+- [Coda — Two Independent Symmetries](#coda--two-independent-symmetries) — Noether's lens, the four registers, the coreflective as exception
 - [See also](#see-also) — related documents
 - [References](#references) — sources used to build the framework
 
@@ -59,7 +59,7 @@ A compiler turns a domain into code. Something is kept. Something leaks. There a
 
 These are not the same question. A faithful contract can still produce data-lossy round-trips. The two questions are independent in the regime that matters.
 
-**The four registers in which the same insight lands**: simulation (state space cannot hold all degrees of freedom), categorization (labels erase intra-class structure), knowledge transfer (the teaching structure caps what can pass), software compilation (the type system caps what can be expressed *and* the data migration caps what can be reconstructed). A [fractal](../GLOSSARY.md#fractal-functor) is the limiting case where both symmetries are exact — schema reflects, instance round-trips, [residue](../GLOSSARY.md#residue) zero on both. Everything else has positive [residue](../GLOSSARY.md#residue) on at least one of the two layers, and which one matters depends on what you are auditing.
+**The four registers in which the same insight lands**: simulation (state space cannot hold all degrees of freedom), categorization (labels erase intra-class structure), knowledge transfer (the teaching structure caps what can pass), software compilation (the type system caps what can be expressed *and* the data migration caps what can be reconstructed). A [coreflective](../GLOSSARY.md#coreflective-functor) is the limiting case where both symmetries are exact — schema reflects, instance round-trips, [residue](../GLOSSARY.md#residue) zero on both. Everything else has positive [residue](../GLOSSARY.md#residue) on at least one of the two layers, and which one matters depends on what you are auditing.
 
 The [residue](../GLOSSARY.md#residue) is not metaphor. It is two categorical objects with two types — one that lives in $\mathcal{L}_1$, one that lives in $\mathbf{Set}^{\mathcal{L}_1}$ — and this framework keeps them apart and stops pretending one will reduce to the other.
 
@@ -144,15 +144,15 @@ This is the practical payoff. The [residue](../GLOSSARY.md#residue) is not a sof
 **Framework (formalized in Lean):**
 
 - Two-layer categorical setup: $\mathcal{L}_1$, $\mathcal{L}_2$, $\Delta$, instance categories $\mathbf{Set}^{\mathcal{L}_1}$, $\mathbf{Set}^{\mathcal{L}_2}$.
-- [Fractal](../GLOSSARY.md#fractal-functor) property: defined as componentwise-monic unit of $\mathrm{Lan}_\Delta \dashv \Delta^*$.
+- [Coreflective](../GLOSSARY.md#coreflective-functor) property: the weakest level `LanFaithful` is defined as componentwise-monic unit of $\mathrm{Lan}_\Delta \dashv \Delta^*$.
 - [Schema-level](../GLOSSARY.md#compilation-and-contract) adjunction: stated as a `Prop` ([M2](../GLOSSARY.md#3--internal-milestone-labels) conjecture, conditional on representability).
 - [Instance-level](../GLOSSARY.md#compilation-and-contract) adjunctions: $\Sigma_\Delta \dashv \Delta^* \dashv \Pi_\Delta$ — imported from Mathlib's Kan extension machinery, available unconditionally.
 
 **Characterizations (Lean lemmas):**
 
-- $\mathrm{Fractal}\, F \iff \mathrm{Lan}_F$ faithful.
-- The identity functor is [fractal](../GLOSSARY.md#fractal-functor).
-- Every fully faithful functor is [fractal](../GLOSSARY.md#fractal-functor).
+- $\mathrm{LanFaithful}\, F \iff \mathrm{Lan}_F$ faithful.
+- The identity functor is [coreflective](../GLOSSARY.md#coreflective-functor).
+- Every fully faithful functor is [coreflective](../GLOSSARY.md#coreflective-functor).
 
 **Original Result:**
 
@@ -254,7 +254,7 @@ This is more useful operationally if it lands: real system instances are not arb
 
 See [DomainSpec.lean](../lean-formalization/DomainSpec.lean) for the full formal setup and conjecture statements in Lean 4.
 
-A finer independence result also has a direct Lean proof: [`s2_and_s3_decoupled`](../lean-formalization/S2VsS3Counter.lean#L158) in `S2VsS3Counter.lean` proves that `S2UnitFractal` (unit of `Lan_F ⊣ F*` is iso) and `S3UnitFractal` (unit of `F* ⊣ Ran_F` is iso) are logically independent — both are instance-layer conditions, and neither implies the other. The schema-vs-instance independence is separately established by the M6 Strong refutation (`m6_strong_refuted` in `M6Counter.lean`).
+A finer independence result also has a direct Lean proof: [`s2_and_s3_decoupled`](../lean-formalization/S2VsS3Counter.lean#L158) in `S2VsS3Counter.lean` proves that `S2UnitCoreflective` (unit of `Lan_F ⊣ F*` is iso) and `S3UnitCoreflective` (unit of `F* ⊣ Ran_F` is iso) are logically independent — both are instance-layer conditions, and neither implies the other. The schema-vs-instance independence is separately established by the M6 Strong refutation (`m6_strong_refuted` in `M6Counter.lean`).
 
 The formal commitment:
 - $\Delta : \mathcal{L}_1 \to \mathcal{L}_2$ is a left Kan extension
@@ -315,7 +315,7 @@ The four registers, read through this:
 - **Knowledge transfer.** The teaching structure caps what can be articulated. Within what is articulated, what each student receives varies. Two leaks.
 - **Software compilation.** The type system caps the contract. The migration caps the data round-trip. Two leaks.
 
-A [fractal](../GLOSSARY.md#fractal-functor) closes both. That is the exception.
+A [coreflective](../GLOSSARY.md#coreflective-functor) closes both. That is the exception.
 
 Vladimir and I have a habit of starting conversations that take years to finish. One began with a simulation that would not give back its world. We asked the same question four ways. The answer has two parts. Both have names now. We will keep talking.
 

@@ -1,5 +1,5 @@
 name = "domainspec"
-defaultTargets = ["DomainSpec", "Fractal", "FractalOP", "M6Counter", "M2Counter", "Cofractal", "CounitCounter", "S3Fractal", "S2VsS3Counter"]
+defaultTargets = ["DomainSpec", "CoreflectiveHierarchy", "M6Counter", "M2Counter", "ReflectiveHierarchy", "CounitCounter", "S3Coreflective", "S2VsS3Counter"]
 
 [[require]]
 name = "mathlib"
@@ -10,11 +10,7 @@ name = "DomainSpec"
 srcDir = ".."
 
 [[lean_lib]]
-name = "Fractal"
-srcDir = ".."
-
-[[lean_lib]]
-name = "FractalOP"
+name = "CoreflectiveHierarchy"
 srcDir = ".."
 
 [[lean_lib]]
@@ -26,7 +22,7 @@ name = "M2Counter"
 srcDir = ".."
 
 [[lean_lib]]
-name = "Cofractal"
+name = "ReflectiveHierarchy"
 srcDir = ".."
 
 [[lean_lib]]
@@ -34,7 +30,7 @@ name = "CounitCounter"
 srcDir = ".."
 
 [[lean_lib]]
-name = "S3Fractal"
+name = "S3Coreflective"
 srcDir = ".."
 
 [[lean_lib]]
