@@ -163,6 +163,8 @@ $$\forall\, X : C \to \mathbf{Set},\; \forall\, c \in C, \quad (\eta_X)_c \text{
 
 *Proof.* For a fully faithful functor, the unit of $\mathrm{Lan}_F \dashv F^*$ is a natural isomorphism — the standard result that left Kan extension along a fully faithful functor restricts back to the original [4, Ch. X, §3]. In Mathlib: `[Full F] [Faithful F]` implies `IsIso (adj.unit.app X)` for each $X$; the componentwise version is `NatIso.isIso_app_of_isIso`. $\square$
 
+**Theorem 5.5′ (Instance-coreflectivity is fully-faithfulness).** $\mathrm{InstanceCoreflective}(F)$ holds **iff** $F$ is fully faithful. The forward direction passes through the left Kan extension: $\mathrm{InstanceCoreflective}(F) \iff \mathrm{Lan}_F$ is fully faithful (`fullyFaithful_lan_of_instanceCoreflective`), and $\mathrm{Lan}_F$ fully faithful $\iff F$ fully faithful is the **Yoneda bridge** `Functor.fullyFaithfulEquivLanFullyFaithful` (`YonedaBridge.lean`, sorry-free). Thus the recognizable property "the translation $F$ is fully faithful" and the formalization's `InstanceCoreflective` are interchangeable at the instance layer; the schema layer additionally requires the right adjoint $G$ to exist (the open M2 conjecture).
+
 ### Level 3 — SchemaCoreflective
 
 **Definition 5.6 (SchemaCoreflective).** Given a functor $F : C \to D$, a functor $G : D \to C$, and an explicit adjunction $\mathrm{adj} : F \dashv G$, we say $(F, G, \mathrm{adj})$ is a *schema coreflective* if the unit
@@ -245,6 +247,8 @@ The mechanism: the diagram whose colimit *is* $\Sigma_\Delta I(b)$ — namely `C
 ---
 
 ## 7. Open Problems
+
+> **Status note (post-publication).** Of the three questions below, only **M2** remains open. **M6-restricted (7.3) is now proven** — `M6Restricted.lean` (`m6_restricted`, no `sorry`): under `InstanceReflective F`, the unit `η_X` is iso iff `X` is in the essential image of `F*`, identifying the reflective fragment as that essential image. **M6′ (7.2) has been resolved**: the universal-$I$ monic form is *refuted* by a bicyclic witness, while the ind-fragment form (faithful $\Delta \Rightarrow$ unit monic on $\mathrm{Ind}(\mathcal{L}_1)$) is *proven unconditional*; both are mechanized in the broader DomainSpec project (`Bicyclic.lean`, `M6PrimeOnInd.lean`), not included in this public subset. The conjecture statements below are retained as originally posed.
 
 The refutation of M6 Strong leaves three related questions unresolved.
 

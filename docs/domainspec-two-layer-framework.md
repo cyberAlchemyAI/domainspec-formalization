@@ -19,7 +19,7 @@ Every act of representation is a translation. Every translation has a [residue](
 
 A simulation never recovers the world it models. The [residue](../GLOSSARY.md#residue) is what the model's state space cannot hold — degrees of freedom that exist in the original but have no slot in the representation. Run the simulation forward, observe the output, ask what you could reconstruct of the world from it: what cannot be reconstructed is the [residue](../GLOSSARY.md#residue). Knowledge transfer works the same way. When an expert teaches, the student receives something — but the expert had more. The gap is not random: two students from the same class can leave with the same gaps, because the gaps are also determined by what the teaching structure could not say, not just by how attentively each student listened.
 
-A categorization collapses continuous variation into discrete types. "Young," "middle-aged," "elderly" — the collapse is intentional, but the internal structure erased by each label is the [residue](../GLOSSARY.md#residue). A [coreflective](../GLOSSARY.md#coreflective-functor) translation is the exception. The translation from whole to part recovers the whole exactly — [residue](../GLOSSARY.md#residue) zero. That is why it feels uncanny: it is the one case where nothing leaks. Everything else does. (We used to call this property "fractal," after the way a fractal's part carries the whole; the honest mathematical name is *coreflective*.)
+A categorization collapses continuous variation into discrete types. "Young," "middle-aged," "elderly" — the collapse is intentional, but the internal structure erased by each label is the [residue](../GLOSSARY.md#residue). A **lossless** translation is the exception. The translation from whole to part recovers the whole exactly — [residue](../GLOSSARY.md#residue) zero. That is why it feels uncanny: it is the one case where nothing leaks. Everything else does. (The canonical lossless case is a **fully faithful** compiler; the formalization names the general residue-zero condition [coreflective](../GLOSSARY.md#coreflective-functor) — the unit of the Kan-extension adjunction is invertible. We used to call it "fractal.")
 
 These four are instances of the same operation. This framing — the [residue](../GLOSSARY.md#residue), the translation, the gap that has structure — started as fifteen years of conversations with my friend Vladimir Rondelli, without the language to fix any of it. We talked about simulations, fractals, categorizations, knowledge transfer. We knew something connected them. We couldn't say what.
 
@@ -140,6 +140,8 @@ This is the practical payoff. The [residue](../GLOSSARY.md#residue) is not a sof
 ---
 
 ## Interlude — Status at a Glance
+
+> **Status note.** The conjecture prose below is retained as originally posed, but two of the open items have since moved: **M6-restricted is proven** (`M6Restricted.lean`, no `sorry`), and **M6′ is resolved** — refuted for universal $I$ (bicyclic witness) and proven on the ind-fragment $\mathrm{Ind}(\mathcal{L}_1)$ (mechanized in the broader DomainSpec project, not in this public subset). M2 remains the one genuinely open conjecture. See `GLOSSARY.md` §3 for the current status table.
 
 **Framework (formalized in Lean):**
 
