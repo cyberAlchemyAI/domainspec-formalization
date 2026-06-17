@@ -5,7 +5,7 @@ kind: meta
 status: conjectural
 authors: [Boscaro, Rondelli]
 created: 2026-04-25
-updated: 2026-05-07
+updated: 2026-06-17
 edges: []
 ---
 
@@ -19,9 +19,9 @@ We started somewhere else — a system-design framework about how software expla
 
 Every translation has [residue](GLOSSARY.md#residue) — what the target representation cannot hold. A simulation never recovers the world it models. A category collapses the variation inside its labels. A teacher passes on less than they know. A compiler keeps the type system honest and lets the data drift, or the other way around.
 
-A [fractal](GLOSSARY.md#fractal-functor) is the exception. The translation from whole to part recovers the whole exactly. Residue zero. That is why fractals feel uncanny — they are the one case where nothing leaks.
+A [coreflective](GLOSSARY.md#coreflective-functor) translation is the exception. The translation from whole to part recovers the whole exactly. Residue zero — nothing leaks. (We used to call this "fractal," because the part determines the whole the way a fractal's part carries the structure of the whole. The honest mathematical name is *coreflective*: the unit of the Kan-extension adjunction is invertible. The "fractal" motif survives only in the [picture](visualization/fractals/).)
 
-So: *which translations are fractal?* That question turned into math, and the math turned into Lean.
+So: *which translations are coreflective?* That question turned into math, and the math turned into Lean.
 
 ## What we want from you
 
@@ -32,11 +32,11 @@ Tell us we're wrong. Or tell us we're not.
 ## What's here
 
 - **The story** — [docs/domainspec-two-layer-framework.md](./docs/domainspec-two-layer-framework.md) is the long version: why translation leaks at two independent levels (the contract and the data), and what's still open.
-- **The paper** — [docs/paper.md](./docs/paper.md) is the formal companion: definitions, theorems, refutations (M6 Strong and M2 unrestricted, both in Lean 4), and the fractal hierarchy. Same mathematics as the story, no prose.
-- **Where it came from** — [docs/meta-layers-reference.md](./docs/meta-layers-reference.md) is the system-design framework that started this.
-- **The proofs** — [lean-formalization/](./lean-formalization/) holds the Lean 4 formalization. Core files: `Fractal.lean` (the fractal definition), `FractalOP.lean` (four-level hierarchy from weakest to strongest), `S3Fractal.lean` and `S2VsS3Counter.lean` (two-layer independence proved: S2 and S3 unit-iso conditions are decoupled), `Cofractal.lean` and `CounitCounter.lean` (counit-side duals and their decoupling from unit-side), and the milestone refutations `M2Counter.lean` and `M6Counter.lean`. Status of each open conjecture lives in the framework doc.
+- **The paper** — [docs/paper.md](./docs/paper.md) is the formal companion: definitions, theorems, refutations (M6 Strong and M2 unrestricted, both in Lean 4), and the coreflective/reflective hierarchy. Same mathematics as the story, no prose.
+- **Where it came from** — [docs/meta-layers-reference.md](./docs/meta-layers-reference.md) is the system-design framework that started this, and [docs/domainspec-paper.md](./docs/domainspec-paper.md) is its full write-up (the L0–L7 meta-architecture and governance-attenuation theory).
+- **The proofs** — [lean-formalization/](./lean-formalization/) holds the Lean 4 formalization. Core files: `CoreflectiveHierarchy.lean` (the unit-side four-level hierarchy from weakest to strongest), `S3Coreflective.lean` and `S2VsS3Counter.lean` (two-layer independence proved: S2 and S3 unit-iso conditions are decoupled), `ReflectiveHierarchy.lean` and `CounitCounter.lean` (counit-side duals and their decoupling from unit-side), and the milestone refutations `M2Counter.lean` and `M6Counter.lean`. The naming is mapped to standard Mathlib terms in [`lean-formalization/NAMING.md`](./lean-formalization/NAMING.md); the status of each open conjecture lives in the framework doc.
 - **Reading the code** — [docs/lean-formalization-guide.md](./docs/lean-formalization-guide.md) maps each Lean file to its mathematical concept and tracks the proof status of every result.
-- **A picture** — [visualization/fractals.html](./visualization/fractals.html). Because some of this is easier to see than to read.
+- **A picture** — [visualization/fractals/](./visualization/fractals/). Because some of this is easier to see than to read.
 
 ## Building the Lean files
 

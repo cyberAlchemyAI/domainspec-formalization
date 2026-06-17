@@ -26,22 +26,22 @@ def L2_f : (L2Obj.a ⟶ L2Obj.b) := (() : Unit)
 
 -- §A.2 — Cross hom-sets in `L1 = Discrete (Fin 2)` are empty.
 
-/-- There is no morphism `b₁ ⟶ a₁` in `Discrete (Fin 2)`. -/
-lemma no_hom_b₁_a₁ : (b₁ ⟶ a₁) → False := by
+/-- There is no morphism `b₁ ⟶ a₁` in `Discrete (ULift (Fin 2))`. -/
+lemma no_hom_b₁_a₁ : (b₁.{0} ⟶ a₁.{0}) → False := by
   intro h
-  have heq : (1 : Fin 2) = (0 : Fin 2) := Discrete.eq_of_hom h
-  exact absurd heq (by decide)
+  have heq : ULift.up.{0} (1 : Fin 2) = ULift.up.{0} (0 : Fin 2) := Discrete.eq_of_hom h
+  exact absurd (ULift.up.inj heq) (by decide)
 
-/-- There is no morphism `a₁ ⟶ b₁` in `Discrete (Fin 2)`. -/
-lemma no_hom_a₁_b₁ : (a₁ ⟶ b₁) → False := by
+/-- There is no morphism `a₁ ⟶ b₁` in `Discrete (ULift (Fin 2))`. -/
+lemma no_hom_a₁_b₁ : (a₁.{0} ⟶ b₁.{0}) → False := by
   intro h
-  have heq : (0 : Fin 2) = (1 : Fin 2) := Discrete.eq_of_hom h
-  exact absurd heq (by decide)
+  have heq : ULift.up.{0} (0 : Fin 2) = ULift.up.{0} (1 : Fin 2) := Discrete.eq_of_hom h
+  exact absurd (ULift.up.inj heq) (by decide)
 
 -- §A.3 — Presheaf abbreviation and pointwise unfolding.
 
 /-- The presheaf `P_b(X) = Hom_{L2}(Δ X, L2Obj.b)` on `L1`. -/
-abbrev P_b : L1ᵒᵖ ⥤ Type := Δ.op ⋙ yoneda.obj L2Obj.b
+abbrev P_b : (L1.{0})ᵒᵖ ⥤ Type := Δ.{0}.op ⋙ yoneda.obj L2Obj.b
 
 @[simp] lemma P_b_obj_a₁ : P_b.obj (Opposite.op a₁) = (L2Obj.a ⟶ L2Obj.b) := rfl
 @[simp] lemma P_b_obj_b₁ : P_b.obj (Opposite.op b₁) = (L2Obj.b ⟶ L2Obj.b) := rfl
@@ -56,19 +56,19 @@ theorem M2_unrestricted_false :
          (F : C₁ ⥤ C₂) (b : C₂),
          Functor.IsRepresentable (F.op ⋙ yoneda.obj b)) := by
   intro hM2
-  -- Specialize at the M6 counterexample.
-  have hRepr : Functor.IsRepresentable (Δ.op ⋙ yoneda.obj L2Obj.b) :=
-    hM2 Δ L2Obj.b
+  -- Specialize at the M6 counterexample (at universe 0).
+  have hRepr : Functor.IsRepresentable (Δ.{0}.op ⋙ yoneda.obj L2Obj.b) :=
+    hM2 Δ.{0} L2Obj.b
   -- Extract a representing object G : L1 and a `RepresentableBy` witness.
   obtain ⟨G, ⟨e⟩⟩ := hRepr.has_representation
-  -- Case-split on G : Discrete (Fin 2).
-  rcases G with ⟨i⟩
+  -- Case-split on G : Discrete (ULift (Fin 2)).
+  rcases G with ⟨⟨i⟩⟩
   fin_cases i
   · -- G = a₁: pull `id_b` back through `e.homEquiv` at X = b₁
     --         to get a morphism `b₁ ⟶ a₁`, which is impossible.
-    have h : b₁ ⟶ ⟨0⟩ := e.homEquiv.symm L2_idb
+    have h : b₁ ⟶ a₁ := e.homEquiv.symm (L2_idb : P_b.obj (Opposite.op b₁))
     exact no_hom_b₁_a₁ h
   · -- G = b₁: pull `f : a → b` back through `e.homEquiv` at X = a₁
     --         to get a morphism `a₁ ⟶ b₁`, which is impossible.
-    have h : a₁ ⟶ ⟨1⟩ := e.homEquiv.symm L2_f
+    have h : a₁ ⟶ b₁ := e.homEquiv.symm (L2_f : P_b.obj (Opposite.op a₁))
     exact no_hom_a₁_b₁ h

@@ -1,5 +1,5 @@
-import Cofractal
-import FractalOP
+import ReflectiveHierarchy
+import CoreflectiveHierarchy
 
 /-!
 # CounitCounter — Independence of Unit-Side and Counit-Side Defects
@@ -8,16 +8,16 @@ We exhibit a small concrete functor `F : Discrete (Fin 1) ⥤ Discrete (Fin 2)`
 (the inclusion sending the unique object to `⟨0⟩`) for which:
 
 * the **unit** of `F.lanAdjunction (Type 0)` is componentwise iso, so `F`
-  satisfies the unit-side `InstanceFractal` property from `FractalOP.lean`;
+  satisfies the unit-side `InstanceCoreflective` property from `CoreflectiveHierarchy.lean`;
 * the **counit** of `F.lanAdjunction (Type 0)` is *not* iso, so `F` does *not*
-  satisfy the counit-side `InstanceCofractal` property from `Cofractal.lean`.
+  satisfy the counit-side `InstanceReflective` property from `ReflectiveHierarchy.lean`.
 
 The argument:
 
 * `F` is fully faithful (between discrete categories the inclusion of a
-  sub-set of objects is fully faithful), so `instanceFractal_of_fullyFaithful`
+  sub-set of objects is fully faithful), so `instanceCoreflective_of_fullyFaithful`
   gives the unit-side claim.
-* If `InstanceCofractal F` held, then the full counit nat-trans of
+* If `InstanceReflective F` held, then the full counit nat-trans of
   `F.lanAdjunction _` would be iso, hence by Mathlib's
   `Adjunction.fullyFaithfulROfIsIsoCounit` the precomposition functor
   `F* = (whiskeringLeft _ _ _).obj F` would be faithful.  We refute this
@@ -27,6 +27,13 @@ The argument:
 
 This proves the two defects are genuinely independent, not just notationally
 dual.
+
+## Naming
+
+See `NAMING.md`. The main result also appears as
+`lan_fullyFaithful_not_imply_pullback_faithful` in standard Mathlib
+vocabulary: `Finc.lan` is fully faithful while `Finc*` is not even
+faithful.
 -/
 
 open CategoryTheory Functor
@@ -63,10 +70,10 @@ finite, so colimits indexed by costructured-arrow categories exist in `Type`. -/
 instance (X : Discrete (Fin 1) ⥤ Type) : Finc.HasPointwiseLeftKanExtension X :=
   fun _ => inferInstance
 
-/-! ## Unit side: `Finc` is an instance fractal. -/
+/-! ## Unit side: `Finc` is an instance coreflective. -/
 
-theorem Finc_instanceFractal : InstanceFractal Finc :=
-  instanceFractal_of_fullyFaithful Finc Finc_fullyFaithful
+theorem Finc_instanceCoreflective : InstanceCoreflective Finc :=
+  instanceCoreflective_of_fullyFaithful Finc Finc_fullyFaithful
 
 /-! ## Counit side: two natural transformations distinguishing `Finc*` faithfulness. -/
 
@@ -148,12 +155,12 @@ theorem whiskeringLeft_Finc_not_faithful :
 
 /-- **Independence of the unit-side and counit-side defects.**
 
-There exists a functor (namely `Finc`) which is an `InstanceFractal` (unit
-side iso) but *not* an `InstanceCofractal` (counit side iso).  Hence the two
-fractal hierarchies are genuinely independent. -/
-theorem instanceCofractal_independent_of_instanceFractal :
-    InstanceFractal Finc ∧ ¬ InstanceCofractal Finc := by
-  refine ⟨Finc_instanceFractal, ?_⟩
+There exists a functor (namely `Finc`) which is an `InstanceCoreflective` (unit
+side iso) but *not* an `InstanceReflective` (counit side iso).  Hence the two
+coreflective hierarchies are genuinely independent. -/
+theorem instanceReflective_independent_of_instanceCoreflective :
+    InstanceCoreflective Finc ∧ ¬ InstanceReflective Finc := by
+  refine ⟨Finc_instanceCoreflective, ?_⟩
   intro hCof
   -- Lift componentwise iso of the counit to iso of the whole nat trans.
   haveI : ∀ Y, IsIso ((Finc.lanAdjunction (Type 0)).counit.app Y) := fun Y => by
@@ -165,3 +172,15 @@ theorem instanceCofractal_independent_of_instanceFractal :
   have hFF : ((whiskeringLeft _ _ (Type 0)).obj Finc).FullyFaithful :=
     Adjunction.fullyFaithfulROfIsIsoCounit (Finc.lanAdjunction (Type 0))
   exact whiskeringLeft_Finc_not_faithful hFF.faithful
+
+/-- **Standard-language restatement** of
+`instanceReflective_independent_of_instanceCoreflective`. The functor `Finc` exhibits
+the asymmetry: its left Kan extension `Finc.lan` is fully faithful, but its
+precomposition functor `Finc* = (whiskeringLeft _ _ _).obj Finc` is not
+faithful (hence not fully faithful). In the language of `NAMING.md`: unit-side
+fully-faithfulness does not imply counit-side fully-faithfulness. -/
+theorem lan_fullyFaithful_not_imply_pullback_faithful :
+    Nonempty ((Finc.lan : (Discrete (Fin 1) ⥤ Type) ⥤ (Discrete (Fin 2) ⥤ Type)).FullyFaithful) ∧
+      ¬ Functor.Faithful ((whiskeringLeft (Discrete (Fin 1)) (Discrete (Fin 2)) Type).obj Finc) := by
+  refine ⟨⟨fullyFaithful_lan_of_instanceCoreflective Finc Finc_instanceCoreflective⟩,
+          whiskeringLeft_Finc_not_faithful⟩

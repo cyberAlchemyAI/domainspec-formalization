@@ -15,6 +15,35 @@
   bound via the discrete Gibbs inequality), the M5 instance triple
   `Σ_Δ ⊣ Δ* ⊣ Π_Δ`, conditional discharge of M2 from costructured-arrow
   terminals, and the parametric `GeneralSchema` substitution theorem.
+
+  ## Conceptual reading — two symmetries, two budgets (Noether parallel)
+
+  The same `Δ : L₁ ⥤ L₂` carries two independent adjunction structures
+  in this file:
+
+    * the **schema-level** adjunction (M4 / `schemaResidueZero_forces_FF`),
+      whose unit can fail by representability collapse;
+    * the **instance-level** triple `Σ_Δ ⊣ Δ* ⊣ Π_Δ` (M5), whose unit
+      and counit can each fail freely under left Kan extension.
+
+  Because these two adjunctions act on the *same* `Δ` but in different
+  categories, their failures are not commensurable: the schema residue
+  and the instance residue are independent quantities, and no single
+  scalar collapses them. This is the discrete-categorical shadow of
+  Noether's theorem — where there is a symmetry, there is a conservation
+  law; two independent symmetries on the same operation force two
+  independent conserved budgets. The analogy is structural rather than
+  literal (no Lagrangian, no Lie group); what transfers is the form of
+  the correspondence. See `docs/paper.md` §6 and
+  `docs/domainspec-two-layer-framework.md` Coda for the prose
+  exposition.
+
+  ## References
+
+  * `docs/paper.md` §6 and Coda — the two-symmetry / Noether reading.
+  * `docs/domainspec-two-layer-framework.md` Coda — four-register table.
+  * Noether, E. "Invariante Variationsprobleme" (1918) — original
+    symmetry/conservation correspondence, invoked here only by analogy.
 -/
 
 import Mathlib.CategoryTheory.Functor.Category

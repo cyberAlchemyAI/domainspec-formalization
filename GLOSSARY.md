@@ -71,11 +71,11 @@ Terms specific to this project. Where the name is custom or borrowed, a note tra
 
 > **Note on "residue."** Borrowed from information-theoretic intuition (what a translation cannot carry through). Not the residue of complex analysis (residue of a meromorphic function) and not the residue of group theory (coset). If you've seen the word in those contexts, set them aside — DomainSpec uses it in the sense "what the translation could not preserve."
 
-### Fractal functor
+### Coreflective functor
 
-- **Fractal functor** — a functor $F : C \to D$ such that the unit of $\mathrm{Lan}_F \dashv F^*$ is **componentwise monic**. Defined and studied in `Fractal.lean`.
+- **Coreflective functor** (unit side) — a functor $F : C \to D$ for which the **unit** of the Kan-extension adjunction $\mathrm{Lan}_F \dashv F^*$ is invertible; equivalently, the left adjoint $\mathrm{Lan}_F$ is fully faithful. The graded versions live in `CoreflectiveHierarchy.lean`: `LanFaithful` (unit componentwise *monic* — the weakest level, $\mathrm{Lan}_F$ faithful), `InstanceCoreflective` (unit componentwise *iso*), `SchemaCoreflective`, and `IsCoreflective` (both layers). The counit-side dual is the **reflective functor** ($F^*$ fully faithful), graded in `ReflectiveHierarchy.lean`.
 
-> **Note on "fractal."** Custom name. Standard description: "$F$ has monic unit on $\mathrm{Lan}_F \dashv F^*$" or equivalently "$\mathrm{Lan}_F$ is faithful" (proved in `fractal_iff_lan_faithful`). We chose "fractal" because the property captures *the part determines the whole* — the data round-trip recovers the populated state without collapse, which is the defining feature of geometric fractals (the part contains the structure of the whole). The connection is metaphorical, not literal — there is no measure theory or self-similarity in the definition. A category theorist reading our work should mentally translate "fractal" to "unit-monic-on-Lan-adjunction" or "Lan-faithful."
+> **Note on the name.** This was originally called a "fractal" functor — a metaphor (*the part determines the whole*, the way a fractal's part carries the structure of the whole), not a mathematical term. It has been renamed to what it actually denotes. A translation recovered without loss by its Kan extension is exactly a **coreflective** (unit side) or **reflective** (counit side) situation; this matches Mathlib's convention, where `CategoryTheory.Reflective` is a fully faithful *right* adjoint (the counit-iso side). The `Is`-prefix in `IsCoreflective` / `IsReflective` avoids a clash with that existing class. See [`lean-formalization/NAMING.md`](lean-formalization/NAMING.md) for the full translation table. The "fractal" word survives only as branding for the [visualization](visualization/fractals.html).
 
 ### Migration vocabulary
 
@@ -87,7 +87,7 @@ Terms specific to this project. Where the name is custom or borrowed, a note tra
 
 - **Two-layer coherence** — the question of whether schema-level discipline ($\Delta$ injective + faithful, or fully faithful) forces instance-level fidelity ($\eta^{\mathrm{ins}}_I$ iso for all $I$). Open in weak form (M6'). Refuted in strong form (M6); see `M6Counter.lean`.
 
-> **Note on `TwoLayerCoherence` vs `TwoLayerCoherence_strong` in `DomainSpec.lean`.** The naming in the Lean file is misleading. `TwoLayerCoherence` (no suffix) is the *refuted* M6 strong (inj-on-obj + faithful $\Rightarrow$ iso). `TwoLayerCoherence_strong` has a stronger antecedent (fully faithful $\Rightarrow$ iso) and is provable from `fractal_of_fullyFaithful`. The `_strong` suffix refers to the antecedent being stronger, not the conclusion. A future rename would help.
+> **Note on `TwoLayerCoherence` vs `TwoLayerCoherence_strong` in `DomainSpec.lean`.** The naming in the Lean file is misleading. `TwoLayerCoherence` (no suffix) is the *refuted* M6 strong (inj-on-obj + faithful $\Rightarrow$ iso). `TwoLayerCoherence_strong` has a stronger antecedent (fully faithful $\Rightarrow$ iso) and is provable from `instanceCoreflective_of_fullyFaithful`. The `_strong` suffix refers to the antecedent being stronger, not the conclusion. A future rename would help.
 
 ### Carrier vocabulary
 
@@ -126,14 +126,14 @@ The M-numbers and T-numbers are project-internal labels for specific claims in t
 
 > **Note on the gap between A1 and A4.** The numbering reflects the file's history, not a sequence: A_time, A_Kan, A_inj are named axioms that align with M4, M1, M3 respectively, while A1 and A4 are numerals tied to specific T0' obligations. There is no A2 or A3. A future rename would smooth this out.
 
-### Definition and three results in `Fractal.lean` (proved, no sorries)
+### Definition and three results for `LanFaithful` in `CoreflectiveHierarchy.lean` (proved, no sorries)
 
 | Name | Claim | Status |
 |---|---|---|
-| `Fractal` | Definition: unit of $\mathrm{Lan}_F \dashv F^*$ componentwise monic | Definition |
-| `fractal_iff_lan_faithful` | $F$ fractal $\iff$ $\mathrm{Lan}_F$ faithful | Proved |
-| `fractal_id` | $\mathrm{id}_C$ is fractal | Proved |
-| `fractal_of_fullyFaithful` | $F$ fully faithful $\Rightarrow$ $F$ fractal | Proved |
+| `LanFaithful` | Definition: unit of $\mathrm{Lan}_F \dashv F^*$ componentwise monic | Definition |
+| `lanFaithful_iff_lan_faithful` | $F$ Lan-faithful $\iff$ $\mathrm{Lan}_F$ faithful | Proved |
+| `lanFaithful_id` | $\mathrm{id}_C$ is Lan-faithful | Proved |
+| `lanFaithful_of_fullyFaithful` | $F$ fully faithful $\Rightarrow$ $F$ Lan-faithful | Proved |
 
 ---
 
@@ -151,4 +151,4 @@ DomainSpec uses standard categorical machinery, recombined for an applied questi
 
 - **Mathlib `CategoryTheory.Functor.KanExtension`.** The Lean implementation of pointwise Kan extensions used (or stubbed) in `DomainSpec.lean` and in the proof of `m6_strong_refuted`.
 
-The "**fractal**" property as defined in `Fractal.lean` does not, to our knowledge, have an established name in the literature under that or any equivalent banner. It is a small, useful condition; the three results in `Fractal.lean` are not deep, but they are precise. The genuinely new mathematical content of DomainSpec — to the extent there is any — is likely concentrated in `m6_strong_refuted` and in the framing of the two-layer audit, not in the categorical machinery.
+The property we formalize **does** have established names: $\mathrm{Lan}_F$ faithful (`LanFaithful`), $\mathrm{Lan}_F$ fully faithful / unit-iso (the **coreflective** side, `InstanceCoreflective`), and $F^*$ fully faithful (the **reflective** side, `InstanceReflective`). Earlier drafts called these "fractal" / "cofractal" and claimed no established name existed; that was an artifact of the metaphor, now corrected (see `NAMING.md`). The conditions are small, useful, and standard; the results about them are precise but not deep. The genuinely new mathematical content of DomainSpec — to the extent there is any — is likely concentrated in `m6_strong_refuted` and in the framing of the two-layer audit, not in the categorical machinery.

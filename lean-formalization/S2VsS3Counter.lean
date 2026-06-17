@@ -1,5 +1,18 @@
-import Mathlib
-import S3Fractal
+import Mathlib.CategoryTheory.Comma.StructuredArrow.Basic
+import Mathlib.CategoryTheory.Discrete.Basic
+import Mathlib.CategoryTheory.Functor.FullyFaithful
+import Mathlib.CategoryTheory.Functor.KanExtension.Adjunction
+import Mathlib.CategoryTheory.Limits.Shapes.IsTerminal
+import Mathlib.CategoryTheory.Limits.Types.Colimits
+import Mathlib.CategoryTheory.Limits.Types.Limits
+import Mathlib.CategoryTheory.Limits.Types.Products
+import Mathlib.CategoryTheory.NatIso
+import Mathlib.CategoryTheory.Types.Basic
+import Mathlib.Data.Fintype.Basic
+import Mathlib.Logic.Unique
+import Mathlib.Tactic.FinCases
+
+import S3Coreflective
 
 /-!
 # S2 vs S3: a concrete decoupling
@@ -7,9 +20,9 @@ import S3Fractal
 We exhibit a single functor `F : Discrete (Fin 1) ⥤ Discrete (Fin 2)`
 that:
 
-* satisfies `S2UnitFractal F` (the unit of `Lan_F ⊣ F*` is iso), because
+* satisfies `S2UnitCoreflective F` (the unit of `Lan_F ⊣ F*` is iso), because
   `F` is fully faithful;
-* fails `S3UnitFractal F` (the unit of `F* ⊣ Ran_F` is **not** iso),
+* fails `S3UnitCoreflective F` (the unit of `F* ⊣ Ran_F` is **not** iso),
   because the unit at the constantly-`Bool` presheaf, evaluated at the
   object `⟨1⟩ ∈ Discrete (Fin 2)` not in the image of `F`, is a map
   `Bool → (limit of an empty diagram in Type) ≃ PUnit`, which collapses
@@ -17,6 +30,12 @@ that:
 
 This refutes the claim of an unrestricted coupling between the S2 and
 S3 unit-iso conditions.
+
+## Naming
+
+See `NAMING.md`. `s2_unit_iso` is equivalent to "`F.lan` is fully
+faithful" (recorded as `lan_fullyFaithful` below). The S3-failure side
+has no clean classical translation.
 -/
 
 open CategoryTheory Functor Limits
@@ -72,8 +91,8 @@ instance (Y : C₁ ⥤ Type) : F.HasPointwiseRightKanExtension Y := fun _ => inf
 
 /-! ## S2 succeeds: F is fully faithful. -/
 
-theorem s2_unit_iso : S2UnitFractal.{0} F :=
-  s2UnitFractal_of_fullyFaithful F F_fullyFaithful
+theorem s2_unit_iso : S2UnitCoreflective.{0} F :=
+  s2UnitCoreflective_of_fullyFaithful F F_fullyFaithful
 
 /-! ## S3 fails: explicit `Y` with collapsing unit at `d₁`. -/
 
@@ -122,9 +141,9 @@ theorem ran_at_d1_subsingleton :
 
 lemma true_ne_false_bool : (true : Bool) ≠ (false : Bool) := by decide
 
-/-! ## Main theorem: S3 unit-fractality fails for `F`. -/
+/-! ## Main theorem: S3 unit-coreflectivity fails for `F`. -/
 
-theorem s3_unit_not_iso : ¬ S3UnitFractal.{0} F := by
+theorem s3_unit_not_iso : ¬ S3UnitCoreflective.{0} F := by
   intro h
   -- Register `h` as a typeclass instance so Mathlib's auto-instances fire.
   haveI hh : IsIso (F.ranAdjunction (Type 0)).unit := h
@@ -152,10 +171,17 @@ theorem s3_unit_not_iso : ¬ S3UnitFractal.{0} F := by
     hsubS.elim _ _
   exact true_ne_false_bool this
 
-/-! ## Headline corollary: S2 and S3 unit-fractality are decoupled. -/
+/-! ## Headline corollary: S2 and S3 unit-coreflectivity are decoupled. -/
 
 theorem s2_and_s3_decoupled :
-    S2UnitFractal.{0} F ∧ ¬ S3UnitFractal.{0} F :=
+    S2UnitCoreflective.{0} F ∧ ¬ S3UnitCoreflective.{0} F :=
   ⟨s2_unit_iso, s3_unit_not_iso⟩
+
+/-- **Standard-language consequence** of `s2_unit_iso`: `F.lan` is fully
+faithful. The counit-side / Ran-side failure `s3_unit_not_iso` does not have
+a clean classical name in current Mathlib; see `NAMING.md`. -/
+theorem lan_fullyFaithful : Nonempty
+    ((F.lan : (C₁ ⥤ Type) ⥤ (D₂ ⥤ Type)).FullyFaithful) :=
+  ⟨fullyFaithful_lan_of_s2UnitCoreflective F s2_unit_iso⟩
 
 end S2VsS3

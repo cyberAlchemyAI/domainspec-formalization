@@ -15,7 +15,7 @@ Victor Boscaro
 
 ## Abstract
 
-Schema compilation is acted on by two distinct symmetries, and each yields its own conservation law: a residue at the level of types and a residue at the level of populated data. Whether the two reduce to one is itself a theorem to be proved or refuted, not assumed. We formalize this phenomenon for a functor $\Delta : \mathcal{L}_1 \to \mathcal{L}_2$ between finitely presented categories, where $\mathcal{L}_1$ is a domain ontology and $\mathcal{L}_2$ is a target schema. At the instance level the migration triple $\Sigma_\Delta \dashv \Delta^* \dashv \Pi_\Delta$ (left/right Kan extensions flanking precomposition) exists unconditionally; the unit $\eta^{\mathrm{ins}}_I : I \Rightarrow \Delta^*(\Sigma_\Delta I)$ measures the instance residue. At the schema level, a right adjoint $G : \mathcal{L}_2 \to \mathcal{L}_1$ would yield a schema residue via the unit $\eta^{\mathrm{sch}}$; its existence is the open M2 conjecture (representability of $\mathrm{Hom}_{\mathcal{L}_2}(\Delta(-), b)$). The two layers are independent: M6 Strong — "$\Delta$ injective on objects and faithful implies $\eta^{\mathrm{ins}}_I$ an isomorphism" — is refuted by a four-object counterexample, formalized in Lean 4. We introduce a two-dimensional fractal hierarchy: on the instance axis $\mathrm{LanFaithful} \subseteq \mathrm{InstanceFractal}$, with $\mathrm{SchemaFractal}$ an orthogonal schema-axis condition, and $\mathrm{Fractal} = \mathrm{SchemaFractal} \land \mathrm{InstanceFractal}$ characterizing the degree to which both residues vanish. Open problems include M2 and M6' (faithfulness implies pointwise-monic unit).
+Schema compilation is acted on by two distinct symmetries, and each yields its own conservation law: a residue at the level of types and a residue at the level of populated data. Whether the two reduce to one is itself a theorem to be proved or refuted, not assumed. We formalize this phenomenon for a functor $\Delta : \mathcal{L}_1 \to \mathcal{L}_2$ between finitely presented categories, where $\mathcal{L}_1$ is a domain ontology and $\mathcal{L}_2$ is a target schema. At the instance level the migration triple $\Sigma_\Delta \dashv \Delta^* \dashv \Pi_\Delta$ (left/right Kan extensions flanking precomposition) exists unconditionally; the unit $\eta^{\mathrm{ins}}_I : I \Rightarrow \Delta^*(\Sigma_\Delta I)$ measures the instance residue. At the schema level, a right adjoint $G : \mathcal{L}_2 \to \mathcal{L}_1$ would yield a schema residue via the unit $\eta^{\mathrm{sch}}$; its existence is the open M2 conjecture (representability of $\mathrm{Hom}_{\mathcal{L}_2}(\Delta(-), b)$). The two layers are independent: M6 Strong — "$\Delta$ injective on objects and faithful implies $\eta^{\mathrm{ins}}_I$ an isomorphism" — is refuted by a four-object counterexample, formalized in Lean 4. We introduce a two-dimensional coreflective hierarchy: on the instance axis $\mathrm{LanFaithful} \subseteq \mathrm{InstanceCoreflective}$, with $\mathrm{SchemaCoreflective}$ an orthogonal schema-axis condition, and $\mathrm{Coreflective} = \mathrm{SchemaCoreflective} \land \mathrm{InstanceCoreflective}$ characterizing the degree to which both residues vanish. Open problems include M2 and M6' (faithfulness implies pointwise-monic unit).
 
 ---
 
@@ -27,7 +27,7 @@ The motivating observation is not specific to compilers. Simulation, categorizat
 
 **The two-layer setup.** Let $\mathcal{L}_1$ and $\mathcal{L}_2$ be finitely presented categories and $\Delta : \mathcal{L}_1 \to \mathcal{L}_2$ a functor — the *compilation contract* — preserving composition and identity. The *instance categories* $\mathbf{Set}^{\mathcal{L}_1}$ and $\mathbf{Set}^{\mathcal{L}_2}$ are the copresheaf categories: a copresheaf $I \in \mathbf{Set}^{\mathcal{L}_1}$ assigns to each domain concept a set of populated instances. Consider, for concreteness, $\mathcal{L}_1$ encoding a domain schema with an `Order` concept carrying a many-to-many relationship to `Product`, and $\mathcal{L}_2$ a relational schema representing this via a join table. The functor $\Delta$ sends `Order` and `Product` to their respective tables and the relationship to the join table's foreign-key span. Two distinct questions arise: (1) does the type system of $\mathcal{L}_2$ admit a functor back to $\mathcal{L}_1$ that reconstructs every domain concept up to isomorphism — the *schema question*; and (2) when a populated domain state is pushed forward through $\Delta$ and pulled back, is the original data recovered — the *instance question*. These questions have different mathematical homes, different sufficiency conditions, and, as we prove, no implication in either direction.
 
-We refer to the formal framework developed here — the two-layer categorical setup, its adjunctions, and the fractal hierarchy organizing residue-zero conditions — as **DomainSpec**.[^1]
+We refer to the formal framework developed here — the two-layer categorical setup, its adjunctions, and the coreflective hierarchy organizing residue-zero conditions — as **DomainSpec**.[^1]
 
 [^1]: A longer, less formal exposition of the project's motivation and four-register framing is given in the companion document *Lost in Translation: Two Independent Symmetries* (`docs/domainspec-two-layer-framework.md`).
 
@@ -39,29 +39,29 @@ We refer to the formal framework developed here — the two-layer categorical se
 
 - **Refutation of M6 Strong (Lean 4, no `sorry`).** The claim "$\Delta$ injective on objects and faithful on morphisms implies $\eta^{\mathrm{ins}}_I$ an isomorphism for every $I$" is false. A four-object counterexample suffices: $\mathcal{L}_1$ discrete on $\{a, b\}$, $\mathcal{L}_2$ adding a single morphism $f : a \to b$, $\Delta$ the inclusion, and $I$ the constant copresheaf at a singleton. The comma category $(\Delta \downarrow b)$ is discrete on two objects, so $\Sigma_\Delta I(b) = \{\ast\} \sqcup \{\ast\}$; the unit component $\eta^{\mathrm{ins}}_{I,b} : \{\ast\} \to \{\ast, \ast\}$ is injective but not surjective. The counterexample is formalized in `M6Counter.lean`.
 
-- **Fractal hierarchy (four levels, `FractalOP.lean`).** We define and organize four graduated properties of a functor $F : C \to D$:
+- **Coreflective hierarchy (four levels, `CoreflectiveHierarchy.lean`).** We define and organize four graduated properties of a functor $F : C \to D$:
   - $\mathrm{LanFaithful}(F)$: the unit of $\mathrm{Lan}_F \dashv F^*$ is componentwise monic; equivalently, $\mathrm{Lan}_F$ is faithful.
-  - $\mathrm{InstanceFractal}(F)$: the unit is componentwise an isomorphism — no Skolem-null witnesses are introduced.
-  - $\mathrm{SchemaFractal}(F, \mathit{adj})$: for an explicit adjunction $F \dashv G$, the unit $\mathit{adj}.\mathit{unit}$ is a natural isomorphism.
-  - $\mathrm{Fractal}(F, \mathit{adj})$: both $\mathrm{SchemaFractal}$ and $\mathrm{InstanceFractal}$ hold — residue zero on both layers.
+  - $\mathrm{InstanceCoreflective}(F)$: the unit is componentwise an isomorphism — no Skolem-null witnesses are introduced.
+  - $\mathrm{SchemaCoreflective}(F, \mathit{adj})$: for an explicit adjunction $F \dashv G$, the unit $\mathit{adj}.\mathit{unit}$ is a natural isomorphism.
+  - $\mathrm{Coreflective}(F, \mathit{adj})$: both $\mathrm{SchemaCoreflective}$ and $\mathrm{InstanceCoreflective}$ hold — residue zero on both layers.
 
-  The adjunction argument in $\mathrm{SchemaFractal}$ and $\mathrm{Fractal}$ is explicit rather than inferred by typeclass resolution, preventing silent assumption of M2. Proved characterizations include: $\mathrm{LanFaithful}(F) \iff \mathrm{Lan}_F$ faithful; the identity functor is fractal; every fully faithful $F$ (equipped with a right adjoint) is fractal.
+  The adjunction argument in $\mathrm{SchemaCoreflective}$ and $\mathrm{Coreflective}$ is explicit rather than inferred by typeclass resolution, preventing silent assumption of M2. Proved characterizations include: $\mathrm{LanFaithful}(F) \iff \mathrm{Lan}_F$ faithful; the identity functor is coreflective; every fully faithful $F$ (equipped with a right adjoint) is coreflective.
 
 - **Open problems identified.** M2-restricted (schema-level representability under a yet-to-be-identified restriction on $\Delta$ — the unrestricted form is refuted in `M2Counter.lean`) and M6' (faithfulness implies $\eta^{\mathrm{ins}}_I$ pointwise monic for all $I$, not just representables) remain open. A weaker M6-restricted variant — coherence on a reflective subcategory of $\mathbf{Set}^{\mathcal{L}_1}$, e.g., states generated by finite colimits of representables — is also open and may be the operationally relevant case.
 
-**Relation to prior work.** The instance-level triple $\Sigma_\Delta \dashv \Delta^* \dashv \Pi_\Delta$ is Spivak's functorial data migration [1]. The contribution of this paper is not the triple but the two-layer audit: separating schema residue from instance residue, showing the layers do not cohere under the natural faithfulness hypothesis, and organizing the degree of coherence into the fractal hierarchy.
+**Relation to prior work.** The instance-level triple $\Sigma_\Delta \dashv \Delta^* \dashv \Pi_\Delta$ is Spivak's functorial data migration [1]. The contribution of this paper is not the triple but the two-layer audit: separating schema residue from instance residue, showing the layers do not cohere under the natural faithfulness hypothesis, and organizing the degree of coherence into the coreflective hierarchy.
 
-**Roadmap.** Section 2 situates this work relative to prior literature. Section 3 fixes the categorical setup. Section 4 develops the two-layer framework and both adjunctions. Section 5 defines the fractal hierarchy and proves the characterization theorems. Section 6 presents the four-object refutation of M6 Strong, with reference to the Lean 4 formalization. Section 7 states M6' and M6-restricted as open problems.
+**Roadmap.** Section 2 situates this work relative to prior literature. Section 3 fixes the categorical setup. Section 4 develops the two-layer framework and both adjunctions. Section 5 defines the coreflective hierarchy and proves the characterization theorems. Section 6 presents the four-object refutation of M6 Strong, with reference to the Lean 4 formalization. Section 7 states M6' and M6-restricted as open problems.
 
 ---
 
 ## 2. Related Work
 
-**Functorial data migration.** The direct ancestor of the $\Sigma_\Delta \dashv \Delta^* \dashv \Pi_\Delta$ triple is Spivak's functorial data migration [1, 2]. Spivak showed that any functor $\Delta$ between schema categories induces, via left and right Kan extension, a push-pull-push triple of migration functors between the corresponding instance categories, and that this triple accounts for a wide class of database operations — joins, projections, and Skolem-null introduction — in a uniform categorical language. Schultz, Spivak, Vasilakopoulou, and Wisnesky [10] later extended this framework to *algebraic databases*, integrating attribute typing into the categorical setup, which is relevant to any refinement of $\mathcal{L}_1$ that distinguishes attribute carriers from concept-types. The present paper inherits this triple entirely. Our contribution relative to Spivak is the *two-layer audit*: we separate the instance residue $\eta^{\mathrm{ins}}_I$ from the schema residue $\eta^{\mathrm{sch}}$, prove that the two layers are independent (refuting M6 Strong), and introduce the fractal hierarchy as a graduated classification of how completely both residues vanish. None of these are addressed in [1, 2, 10].
+**Functorial data migration.** The direct ancestor of the $\Sigma_\Delta \dashv \Delta^* \dashv \Pi_\Delta$ triple is Spivak's functorial data migration [1, 2]. Spivak showed that any functor $\Delta$ between schema categories induces, via left and right Kan extension, a push-pull-push triple of migration functors between the corresponding instance categories, and that this triple accounts for a wide class of database operations — joins, projections, and Skolem-null introduction — in a uniform categorical language. Schultz, Spivak, Vasilakopoulou, and Wisnesky [10] later extended this framework to *algebraic databases*, integrating attribute typing into the categorical setup, which is relevant to any refinement of $\mathcal{L}_1$ that distinguishes attribute carriers from concept-types. The present paper inherits this triple entirely. Our contribution relative to Spivak is the *two-layer audit*: we separate the instance residue $\eta^{\mathrm{ins}}_I$ from the schema residue $\eta^{\mathrm{sch}}$, prove that the two layers are independent (refuting M6 Strong), and introduce the coreflective hierarchy as a graduated classification of how completely both residues vanish. None of these are addressed in [1, 2, 10].
 
 **Skolem nulls and incomplete information.** The appearance of fresh witnesses in $\Sigma_\Delta I$ — the elements introduced when the comma category $(\Delta \downarrow b)$ contains objects not in the image of $\Delta$ — is the categorical analogue of Skolem nulls in the sense of Imieliński and Lipski [3]. That paper established the foundational treatment of labeled nulls and incomplete information in relational databases, showing that the "certain answers" semantics corresponds to a universal quantification over all possible completions of a partial database. The colimit formula $(\Sigma_\Delta I)(b) = \mathrm{colim}_{(\Delta \downarrow b)} I$ makes this quantification explicit: a Skolem witness at $b$ is precisely a connected component of $(\Delta \downarrow b)$ that contributes no constraint from $\mathcal{L}_1$. The M6 Strong refutation (Section 6) shows that such witnesses can appear even when $\Delta$ is injective and faithful.
 
-**Kan extensions and the machinery of category theory.** The main technical tools — left and right Kan extensions, adjoint triples, the coend formula — are developed in Mac Lane [4, Ch. X] and Riehl [5]. Riehl's treatment is particularly useful for the pointwise formula and its coend representation. The fractal hierarchy of Section 5 makes systematic use of the unit of an adjunction as a measure of invertibility, a perspective emphasized throughout [5]. Awodey [6] provides additional background on functor categories and copresheaves.
+**Kan extensions and the machinery of category theory.** The main technical tools — left and right Kan extensions, adjoint triples, the coend formula — are developed in Mac Lane [4, Ch. X] and Riehl [5]. Riehl's treatment is particularly useful for the pointwise formula and its coend representation. The coreflective hierarchy of Section 5 makes systematic use of the unit of an adjunction as a measure of invertibility, a perspective emphasized throughout [5]. Awodey [6] provides additional background on functor categories and copresheaves.
 
 **Lean 4 and Mathlib.** All theorems in this paper that are marked as formalized are proved in Lean 4 [7] using Mathlib [8]. In particular, Mathlib's `CategoryTheory.Functor.KanExtension` provides the core infrastructure for left and right Kan extensions along arbitrary functors, including the pointwise formula and the adjunction isomorphism. The adjunction type `Adjunction` in Mathlib packages the unit and counit with the triangle identity proofs, which is used throughout the formalization.
 
@@ -126,11 +126,11 @@ whose component $\eta^{\mathrm{sch}}_v : v \to G(\Delta(v))$ measures whether th
 
 ---
 
-## 5. The Fractal Hierarchy
+## 5. The Coreflective Hierarchy
 
-The DomainSpec framework admits a graduated classification of compilation functors according to how completely they preserve information on each of the two layers. We define four levels, from weakest to strongest, formalized in [`FractalOP.lean`](../lean-formalization/FractalOP.lean).
+The DomainSpec framework admits a graduated classification of compilation functors according to how completely they preserve information on each of the two layers. We define four levels, from weakest to strongest, formalized in [`CoreflectiveHierarchy.lean`](../lean-formalization/CoreflectiveHierarchy.lean).
 
-The hierarchy is two-dimensional. On the instance axis, $\mathrm{LanFaithful} \subseteq \mathrm{InstanceFractal}$. On an orthogonal schema axis sits $\mathrm{SchemaFractal}$, an independent (and conjectural) condition. The top of the hierarchy is the conjunction $\mathrm{Fractal} = \mathrm{SchemaFractal} \land \mathrm{InstanceFractal}$, which requires both axes to be tight simultaneously.
+The hierarchy is two-dimensional. On the instance axis, $\mathrm{LanFaithful} \subseteq \mathrm{InstanceCoreflective}$. On an orthogonal schema axis sits $\mathrm{SchemaCoreflective}$, an independent (and conjectural) condition. The top of the hierarchy is the conjunction $\mathrm{Coreflective} = \mathrm{SchemaCoreflective} \land \mathrm{InstanceCoreflective}$, which requires both axes to be tight simultaneously.
 
 ### Level 1 — LanFaithful
 
@@ -150,54 +150,54 @@ This is the weakest level of the hierarchy: it guarantees no information is lost
 
 *Proof.* Forward direction: if every $(\eta_X)_c$ is monic, then $\eta_X$ is monic in $\mathbf{Set}^C$ by `NatTrans.mono_of_mono_app`; Mathlib's `Adjunction.faithful_L_of_mono_unit_app` gives that $\mathrm{Lan}_F$ is faithful. Converse: a faithful left adjoint implies the unit is monic (Mathlib typeclass instance), and componentwise mono descends from the functor category to each application. $\square$
 
-### Level 2 — InstanceFractal
+### Level 2 — InstanceCoreflective
 
-**Definition 5.3 (InstanceFractal).** A functor $F : C \to D$ is an *instance fractal* if the unit of the adjunction $\mathrm{Lan}_F \dashv F^*$ is componentwise an isomorphism:
+**Definition 5.3 (InstanceCoreflective).** A functor $F : C \to D$ is an *instance coreflective* if the unit of the adjunction $\mathrm{Lan}_F \dashv F^*$ is componentwise an isomorphism:
 $$\forall\, X : C \to \mathbf{Set},\; \forall\, c \in C, \quad (\eta_X)_c \text{ is an isomorphism in } \mathbf{Set}.$$
 
-**Theorem 5.4 (InstanceFractal implies LanFaithful).** Every instance fractal functor is Lan-faithful.
+**Theorem 5.4 (InstanceCoreflective implies LanFaithful).** Every instance coreflective functor is Lan-faithful.
 
 *Proof.* An isomorphism is in particular a monomorphism. $\square$
 
-**Theorem 5.5 (Identity and fully faithful functors are InstanceFractal).** (i) The identity functor $\mathrm{id}_C$ is an instance fractal. (ii) Every fully faithful functor $F : C \to D$ is an instance fractal.
+**Theorem 5.5 (Identity and fully faithful functors are InstanceCoreflective).** (i) The identity functor $\mathrm{id}_C$ is an instance coreflective. (ii) Every fully faithful functor $F : C \to D$ is an instance coreflective.
 
 *Proof.* For a fully faithful functor, the unit of $\mathrm{Lan}_F \dashv F^*$ is a natural isomorphism — the standard result that left Kan extension along a fully faithful functor restricts back to the original [4, Ch. X, §3]. In Mathlib: `[Full F] [Faithful F]` implies `IsIso (adj.unit.app X)` for each $X$; the componentwise version is `NatIso.isIso_app_of_isIso`. $\square$
 
-### Level 3 — SchemaFractal
+### Level 3 — SchemaCoreflective
 
-**Definition 5.6 (SchemaFractal).** Given a functor $F : C \to D$, a functor $G : D \to C$, and an explicit adjunction $\mathrm{adj} : F \dashv G$, we say $(F, G, \mathrm{adj})$ is a *schema fractal* if the unit
+**Definition 5.6 (SchemaCoreflective).** Given a functor $F : C \to D$, a functor $G : D \to C$, and an explicit adjunction $\mathrm{adj} : F \dashv G$, we say $(F, G, \mathrm{adj})$ is a *schema coreflective* if the unit
 $$\mathrm{adj.unit} : \mathrm{id}_C \Longrightarrow G \circ F$$
 is a natural isomorphism, i.e., $\mathrm{IsIso}(\mathrm{adj.unit})$.
 
 In Lean, the property is stated as: given an explicit adjunction $F \dashv G$, the unit of that adjunction is a natural isomorphism.
 ```lean
-def SchemaFractal {G : D ⥤ C} (F : C ⥤ D) (adj : F ⊣ G) : Prop :=
+def SchemaCoreflective {G : D ⥤ C} (F : C ⥤ D) (adj : F ⊣ G) : Prop :=
   IsIso adj.unit
 ```
 The adjunction $\mathrm{adj}$ is an *explicit argument*, not resolved by typeclass inference: one must supply a proof that the schema-level right adjoint $G$ exists, rather than have it inferred. This prevents Lean's typeclass mechanism from silently discharging Conjecture 4.8 (M2), which would smuggle a covert `sorry` into any proof invoking it.
 
-**Theorem 5.7.** (i) Every equivalence of categories $e : C \simeq D$ yields a schema fractal $(e.\mathrm{functor}, e.\mathrm{inverse}, e.\mathrm{toAdjunction})$. (ii) Every fully faithful functor $F : C \to D$ equipped with an explicit adjunction $\mathrm{adj} : F \dashv G$ is a schema fractal.
+**Theorem 5.7.** (i) Every equivalence of categories $e : C \simeq D$ yields a schema coreflective $(e.\mathrm{functor}, e.\mathrm{inverse}, e.\mathrm{toAdjunction})$. (ii) Every fully faithful functor $F : C \to D$ equipped with an explicit adjunction $\mathrm{adj} : F \dashv G$ is a schema coreflective.
 
 *Proof.* (i) For an equivalence, the unit is an isomorphism by construction. (ii) `[Full F] [Faithful F]` implies `IsIso adj.unit` via Mathlib's `Adjunction.unit_isIso_of_L_fully_faithful`. $\square$
 
-### Level 4 — Fractal
+### Level 4 — IsCoreflective
 
-**Definition 5.8 (Fractal).** A functor $F : C \to D$, together with a functor $G : D \to C$, an explicit adjunction $\mathrm{adj} : F \dashv G$, and the pointwise Kan extension hypothesis, is a *fractal* if
-$$\mathrm{Fractal}(F, \mathrm{adj}) \;\iff\; \mathrm{SchemaFractal}(F, \mathrm{adj}) \;\land\; \mathrm{InstanceFractal}(F).$$
+**Definition 5.8 (Coreflective).** A functor $F : C \to D$, together with a functor $G : D \to C$, an explicit adjunction $\mathrm{adj} : F \dashv G$, and the pointwise Kan extension hypothesis, is a *coreflective* if
+$$\mathrm{Coreflective}(F, \mathrm{adj}) \;\iff\; \mathrm{SchemaCoreflective}(F, \mathrm{adj}) \;\land\; \mathrm{InstanceCoreflective}(F).$$
 
 In Lean, the property is the conjunction of the two preceding levels: schema-level and instance-level units are both natural isomorphisms.
 ```lean
-def Fractal {G : D ⥤ C} (F : C ⥤ D) (adj : F ⊣ G)
+def IsCoreflective {G : D ⥤ C} (F : C ⥤ D) (adj : F ⊣ G)
     [∀ X : C ⥤ Type v, F.HasPointwiseLeftKanExtension X] : Prop :=
-  SchemaFractal F adj ∧ InstanceFractal F
+  SchemaCoreflective F adj ∧ InstanceCoreflective F
 ```
-A fractal functor has *residue zero* on both layers: the schema round-trip $C \xrightarrow{F} D \xrightarrow{G} C$ is an isomorphism at the level of objects, and the instance round-trip $I \mapsto \mathrm{Lan}_F I \mapsto F^*(\mathrm{Lan}_F I)$ is an isomorphism at every record component.
+A coreflective functor has *residue zero* on both layers: the schema round-trip $C \xrightarrow{F} D \xrightarrow{G} C$ is an isomorphism at the level of objects, and the instance round-trip $I \mapsto \mathrm{Lan}_F I \mapsto F^*(\mathrm{Lan}_F I)$ is an isomorphism at every record component.
 
-**Theorem 5.9 (Canonical fractal functors).** (i) $\mathrm{id}_C$ is a fractal, witnessed by $\mathrm{Adjunction.id}$. (ii) Every equivalence of categories is a fractal. (iii) Every fully faithful functor with an explicit right adjoint is a fractal.
+**Theorem 5.9 (Canonical coreflective functors).** (i) $\mathrm{id}_C$ is a coreflective, witnessed by $\mathrm{Adjunction.id}$. (ii) Every equivalence of categories is a coreflective. (iii) Every fully faithful functor with an explicit right adjoint is a coreflective.
 
-*Proof.* Each case reduces to the constituent results at both levels. For (ii), the equivalence functor is fully faithful, giving InstanceFractal; and the equivalence gives SchemaFractal by Theorem 5.7(i). $\square$
+*Proof.* Each case reduces to the constituent results at both levels. For (ii), the equivalence functor is fully faithful, giving InstanceCoreflective; and the equivalence gives SchemaCoreflective by Theorem 5.7(i). $\square$
 
-**Remark 5.10.** The four-level hierarchy is designed so that the two instance-level properties (Definitions 5.1 and 5.3) require no hypothesis beyond pointwise Kan extensions existing, while the schema-level and full fractal properties (Definitions 5.6 and 5.8) require an explicit adjunction. This reflects the epistemic situation: the adjoint triple $\Sigma_\Delta \dashv \Delta^* \dashv \Pi_\Delta$ exists unconditionally (Theorem 4.5), but the schema-level adjunction $\Delta \dashv G$ is the content of the open Conjecture 4.8 (M2).
+**Remark 5.10.** The four-level hierarchy is designed so that the two instance-level properties (Definitions 5.1 and 5.3) require no hypothesis beyond pointwise Kan extensions existing, while the schema-level and full coreflective properties (Definitions 5.6 and 5.8) require an explicit adjunction. This reflects the epistemic situation: the adjoint triple $\Sigma_\Delta \dashv \Delta^* \dashv \Pi_\Delta$ exists unconditionally (Theorem 4.5), but the schema-level adjunction $\Delta \dashv G$ is the content of the open Conjecture 4.8 (M2).
 
 ---
 
@@ -268,7 +268,7 @@ Plausible candidates for $\mathcal{S}$: the full subcategory generated by repres
 
 ## 8. Conclusion
 
-Two layers, two conservation laws, two budgets — never one. The adjoint triple $\Sigma_\Delta \dashv \Delta^* \dashv \Pi_\Delta$ exists unconditionally for any functor $\Delta : \mathcal{L}_1 \to \mathcal{L}_2$ between small categories, giving the instance residue unit $\eta^{\mathrm{ins}}_I$ for free. The claim M6 Strong — that injectivity on objects and faithfulness of $\Delta$ together force $\eta^{\mathrm{ins}}_I$ to be an isomorphism — is false, refuted by a four-object counterexample formalized in Lean 4 with no `sorry`. The fractal hierarchy is two-dimensional rather than a single chain: an instance-axis progression $\mathrm{LanFaithful} \subseteq \mathrm{InstanceFractal}$, an orthogonal schema-axis condition $\mathrm{SchemaFractal}$, and the conjunction $\mathrm{Fractal} = \mathrm{SchemaFractal} \land \mathrm{InstanceFractal}$ at the top. It provides a graduated classification of how completely the instance and schema residues vanish, with characterization theorems proved at each level. The explicit-adjunction design of $\mathrm{SchemaFractal}$ and $\mathrm{Fractal}$ enforces that the open conjecture M2 is never silently assumed.
+Two layers, two conservation laws, two budgets — never one. The adjoint triple $\Sigma_\Delta \dashv \Delta^* \dashv \Pi_\Delta$ exists unconditionally for any functor $\Delta : \mathcal{L}_1 \to \mathcal{L}_2$ between small categories, giving the instance residue unit $\eta^{\mathrm{ins}}_I$ for free. The claim M6 Strong — that injectivity on objects and faithfulness of $\Delta$ together force $\eta^{\mathrm{ins}}_I$ to be an isomorphism — is false, refuted by a four-object counterexample formalized in Lean 4 with no `sorry`. The coreflective hierarchy is two-dimensional rather than a single chain: an instance-axis progression $\mathrm{LanFaithful} \subseteq \mathrm{InstanceCoreflective}$, an orthogonal schema-axis condition $\mathrm{SchemaCoreflective}$, and the conjunction $\mathrm{Coreflective} = \mathrm{SchemaCoreflective} \land \mathrm{InstanceCoreflective}$ at the top. It provides a graduated classification of how completely the instance and schema residues vanish, with characterization theorems proved at each level. The explicit-adjunction design of $\mathrm{SchemaCoreflective}$ and $\mathrm{Coreflective}$ enforces that the open conjecture M2 is never silently assumed.
 
 Three problems remain open. M2 asks whether $\mathrm{Hom}_{\mathcal{L}_2}(\Delta(-), b)$ is representable for every $b \in \mathcal{L}_2$ — the condition under which the schema-level right adjoint $G$ and the unit $\eta^{\mathrm{sch}}$ exist. M6' asks whether faithfulness of $\Delta$ alone implies that $\eta^{\mathrm{ins}}_I$ is pointwise monic for all $I$, beyond the representable case where the result is immediate. M6-restricted asks for a nontrivial reflective subcategory $\mathcal{S} \hookrightarrow \mathbf{Set}^{\mathcal{L}_1}$ on which injectivity and faithfulness do force $\eta^{\mathrm{ins}}_I$ to be an isomorphism, with copresheaves generated by finite colimits of representables as the natural candidate. Each of these problems has a concrete formulation ready for either a proof or a further counterexample.
 
@@ -286,7 +286,7 @@ DomainSpec inhabits a discrete universe, and the move transfers. The compilation
 
 The four registers are read through the same lens. In **simulation**, the state space caps the world the model can hold; the dynamics cap the populated trajectory the observer can reconstruct. In **categorization**, the label set caps the types in play; the intra-class variation caps what each instance contributes. In **knowledge transfer**, the teaching structure caps what can be articulated; what each student receives caps what is conserved across the channel. In **software compilation**, the type system caps the contract; the data migration caps the round-trip. In each register, two leaks, two budgets, never one.
 
-A fractal is the limiting case where both residues vanish — schema round-trip exact, instance round-trip exact, $\eta^{\mathrm{sch}}$ and $\eta^{\mathrm{ins}}$ both natural isomorphisms (Definition 5.8). Everything else has positive residue on at least one of the two layers, and which one matters depends on what is being audited. The open conjectures M2, M6', and M6-restricted mark the live frontier of the framework: the points at which formal reasoning hands off to either further proof or calibrated empirical practice.
+A coreflective is the limiting case where both residues vanish — schema round-trip exact, instance round-trip exact, $\eta^{\mathrm{sch}}$ and $\eta^{\mathrm{ins}}$ both natural isomorphisms (Definition 5.8). Everything else has positive residue on at least one of the two layers, and which one matters depends on what is being audited. The open conjectures M2, M6', and M6-restricted mark the live frontier of the framework: the points at which formal reasoning hands off to either further proof or calibrated empirical practice.
 
 The instinct to ask whether the two laws reduce is older than the formalization. We give it a name and an answer.
 
@@ -297,9 +297,9 @@ The instinct to ask whether the two laws reduce is older than the formalization.
 - [DomainSpec Two-Layer Framework](./domainspec-two-layer-framework.md) — The philosophical and system framing: the four-register motivation (simulation, categorization, knowledge transfer, compilation) and the long-form exposition of the two-layer residue.
 - [Lean Formalization Guide](./lean-formalization-guide.md) — The Lean-side companion: file-by-file walkthrough of the formalization, status of each result, and the proof-obligation map.
 - [Glossary](../GLOSSARY.md) — Definitions of all terms, milestone labels (M-numbers, T-numbers), and literature mapping.
-- [Fractal.lean](../lean-formalization/Fractal.lean) — The proven kernel: definition of fractal functor, the faithfulness characterization, identity and fully faithful cases.
-- [FractalOP.lean](../lean-formalization/FractalOP.lean) — The four-level hierarchy: $\mathrm{LanFaithful}$, $\mathrm{InstanceFractal}$, $\mathrm{SchemaFractal}$, $\mathrm{Fractal}$ as defined in §5.
-- [S3Fractal.lean](../lean-formalization/S3Fractal.lean) — Defines `S2UnitFractal` (unit of $\mathrm{Lan}_F \dashv F^*$ is iso) and `S3UnitFractal` (unit of $F^* \dashv \mathrm{Ran}_F$ is iso) — the two canonical unit-iso conditions corresponding to the two symmetries of this paper.
+- [CoreflectiveHierarchy.lean](../lean-formalization/CoreflectiveHierarchy.lean) — The proven kernel: definition of coreflective functor, the faithfulness characterization, identity and fully faithful cases.
+- [CoreflectiveHierarchy.lean](../lean-formalization/CoreflectiveHierarchy.lean) — The four-level hierarchy: $\mathrm{LanFaithful}$, $\mathrm{InstanceCoreflective}$, $\mathrm{SchemaCoreflective}$, $\mathrm{Coreflective}$ as defined in §5.
+- [S3Coreflective.lean](../lean-formalization/S3Coreflective.lean) — Defines `S2UnitCoreflective` (unit of $\mathrm{Lan}_F \dashv F^*$ is iso) and `S3UnitCoreflective` (unit of $F^* \dashv \mathrm{Ran}_F$ is iso) — the two canonical unit-iso conditions corresponding to the two symmetries of this paper.
 - [S2VsS3Counter.lean](../lean-formalization/S2VsS3Counter.lean) — Proves `s2_and_s3_decoupled`: a single functor satisfies S2 but fails S3, formalizing the two-layer independence claim of §6 at the level of the canonical adjunctions.
 - [M6Counter.lean](../lean-formalization/M6Counter.lean) — The four-object counterexample formalizing the refutation of M6 Strong (§6).
 - [M2Counter.lean](../lean-formalization/M2Counter.lean) — Reuses the four-object setup to refute the unrestricted form of Conjecture 4.8 (M2): theorem `M2_unrestricted_false` (§4).

@@ -9,27 +9,25 @@ last_updated: 2026-04-29
 
 # From Math to Code: Reading the Lean Files
 
-This document describes what lives in `Fractal.lean` and `DomainSpec.lean`. It assumes you've read the mathematical framework in [domainspec-two-layer-framework.md](./domainspec-two-layer-framework.md) but may not be familiar with Lean syntax. The goal is to map concepts to code and show the landscape you're entering.
+This document describes what lives in `CoreflectiveHierarchy.lean` and `DomainSpec.lean`. It assumes you've read the mathematical framework in [domainspec-two-layer-framework.md](./domainspec-two-layer-framework.md) but may not be familiar with Lean syntax. The goal is to map concepts to code and show the landscape you're entering.
 
 ---
 
 ## Overview
 
-Nine files, organized by purpose:
+Eight files, organized by purpose:
 
-**`Fractal.lean`** — The proven kernel. Defines what a [fractal functor](../GLOSSARY.md#fractal-functor) is, gives an equivalent characterization (via faithfulness of the left Kan extension), and discharges two cases: the identity is [fractal](../GLOSSARY.md#fractal-functor), and every fully faithful functor is [fractal](../GLOSSARY.md#fractal-functor). Every claim discharged. No sorries.
+**`CoreflectiveHierarchy.lean`** — The unit-side kernel. Defines a [coreflective functor](../GLOSSARY.md#coreflective-functor) and splits it into four graduated levels — `LanFaithful` (componentwise mono unit, the weakest; equivalent to `Lan_F` faithful), `InstanceCoreflective` (componentwise iso unit), `SchemaCoreflective`, and `IsCoreflective` (both layers) — so that the [M2 conjecture](../GLOSSARY.md#3--internal-milestone-labels) is captured precisely. Gives the equivalent characterization (faithfulness of the left Kan extension) and discharges the base cases (identity, fully faithful); every claim discharged, no sorries. The schema-level definition takes an explicit adjunction argument rather than a typeclass, preventing typeclass inference from silently assuming the conjecture. (This file absorbs the earlier standalone `Fractal.lean`, now its weakest level `LanFaithful`.)
 
-**`FractalOP.lean`** — The refined hierarchy. Splits the single notion from `Fractal.lean` into four graduated levels — `LanFaithful`, `InstanceFractal`, `SchemaFractal`, and `Fractal` — so that the [M2 conjecture](../GLOSSARY.md#3--internal-milestone-labels) is captured precisely. The schema-level definition takes an explicit adjunction argument rather than a typeclass, preventing typeclass inference from silently assuming the conjecture.
+**`S3Coreflective.lean`** — Two parallel unit-iso conditions. Defines `S2UnitCoreflective F` (unit of `Lan_F ⊣ F*` is iso — the left-Kan adjunction) and `S3UnitCoreflective F` (unit of `F* ⊣ Ran_F` is iso — the right-Kan adjunction). Both are instance-layer properties; they are independent of each other. Proves that every fully faithful functor is S2 unit-coreflective.
 
-**`S3Fractal.lean`** — Two parallel unit-iso conditions. Defines `S2UnitFractal F` (unit of `Lan_F ⊣ F*` is iso — the left-Kan adjunction) and `S3UnitFractal F` (unit of `F* ⊣ Ran_F` is iso — the right-Kan adjunction). Both are instance-layer properties; they are independent of each other. Proves that every fully faithful functor is S2 unit-fractal.
+**`S2VsS3Counter.lean`** — Left-Kan vs right-Kan unit-iso independence. Exhibits a single functor `F : Discrete (Fin 1) ⥤ Discrete (Fin 2)` that satisfies `S2UnitCoreflective` (because `F` is fully faithful) but fails `S3UnitCoreflective` (the unit at an object outside the image of `F` collapses `Bool` to `PUnit`). The headline: `s2_and_s3_decoupled`. Note: this is *not* the schema-vs-instance independence result (that is proved via M6 Strong refutation in `M6Counter.lean`); it is the finer claim that, within the instance layer, the left-Kan and right-Kan unit conditions are themselves independent.
 
-**`S2VsS3Counter.lean`** — Left-Kan vs right-Kan unit-iso independence. Exhibits a single functor `F : Discrete (Fin 1) ⥤ Discrete (Fin 2)` that satisfies `S2UnitFractal` (because `F` is fully faithful) but fails `S3UnitFractal` (the unit at an object outside the image of `F` collapses `Bool` to `PUnit`). The headline: `s2_and_s3_decoupled`. Note: this is *not* the schema-vs-instance independence result (that is proved via M6 Strong refutation in `M6Counter.lean`); it is the finer claim that, within the instance layer, the left-Kan and right-Kan unit conditions are themselves independent.
+**`ReflectiveHierarchy.lean`** — Counit-side duals. Defines the counit analogues `InstanceReflective` (counit componentwise iso), `SchemaReflective`, and `IsReflective`. There is no mono-only level on the counit side: the Mathlib criterion is naturally stated at the iso level. Dual to `CoreflectiveHierarchy.lean` but independent: a functor can satisfy the unit-side conditions without satisfying the counit-side ones.
 
-**`Cofractal.lean`** — Counit-side duals. Defines the counit analogues of `LanFaithful`, `InstanceFractal`, and `SchemaFractal`: `LanCofaithful`, `InstanceCofractal`, and `SchemaCofractal`. Dual to `FractalOP.lean` but independent: a functor can satisfy the unit-side conditions without satisfying the counit-side ones.
+**`CounitCounter.lean`** — Unit/counit decoupling. Constructs a functor `Finc` that is `InstanceCoreflective` (unit componentwise iso) but fails `InstanceReflective` (counit not iso). Proves `InstanceCoreflective Finc ∧ ¬ InstanceReflective Finc`.
 
-**`CounitCounter.lean`** — Unit/counit decoupling. Constructs a functor `Finc` that is `InstanceFractal` (unit componentwise iso) but fails `InstanceCofractal` (counit not iso). Proves `InstanceFractal Finc ∧ ¬ InstanceCofractal Finc`.
-
-**`DomainSpec.lean`** — The research landscape. The full two-layer [residue](../GLOSSARY.md#residue) framework formalized in Lean: all the definitions, assumptions, the free adjunctions that exist, and the conjectures still open. It shows where the results in `Fractal.lean` and `FractalOP.lean` live, and what remains to be proved.
+**`DomainSpec.lean`** — The research landscape. The full two-layer [residue](../GLOSSARY.md#residue) framework formalized in Lean: all the definitions, assumptions, the free adjunctions that exist, and the conjectures still open. It shows where the results in `CoreflectiveHierarchy.lean` and `ReflectiveHierarchy.lean` live, and what remains to be proved.
 
 **`M6Counter.lean`** — The four-object counterexample. Constructs the concrete setup (`L1 = Discrete (Fin 2)`, `L2 = {a, b, f : a → b}`, Δ the inclusion) used to refute the strong form of the [M6 coherence conjecture](../GLOSSARY.md#3--internal-milestone-labels): even when Δ is fully faithful, the [instance-level](../GLOSSARY.md#compilation-and-contract) unit fails to be iso. The carriers, the category structure, and the Kan-extension instance live here.
 
@@ -37,14 +35,14 @@ Nine files, organized by purpose:
 
 ---
 
-## `Fractal.lean` — The Proven Results
+## `CoreflectiveHierarchy.lean` — Base Results (`LanFaithful`)
 
-A [fractal functor](../GLOSSARY.md#fractal-functor) is defined simply: a functor $F : C \to D$ where the canonical adjunction $\mathrm{Lan}_F \dashv F^*$ between presheaf categories has a unit that is **componentwise monic** — no information loss in the round-trip.
+The weakest level, `LanFaithful`, is defined simply: a functor $F : C \to D$ where the canonical adjunction $\mathrm{Lan}_F \dashv F^*$ between presheaf categories has a unit that is **componentwise monic** — no information loss in the round-trip.
 
 ### The definition
 
 ```
-def Fractal (F : C ⥤ D) : Prop :=
+def LanFaithful (F : C ⥤ D) : Prop :=
   ∀ (X : C ⥤ Type v) (c : C),
     Mono (((F.lanAdjunction (Type v)).unit.app X).app c)
 ```
@@ -53,22 +51,22 @@ This says: for every presheaf `X` and every object `c`, the unit of the left Kan
 
 ### The characterization and two cases
 
-**Characterization — `fractal_iff_lan_faithful`**
-A functor is [fractal](../GLOSSARY.md#fractal-functor) iff the left Kan extension functor itself is faithful. Two views of the same property.
+**Characterization — `lanFaithful_iff_lan_faithful`**
+A functor is Lan-faithful iff the left Kan extension functor itself is faithful. Two views of the same property.
 
-**Identity case — `fractal_id`**
-The identity functor is [fractal](../GLOSSARY.md#fractal-functor). Immediate: the identity's Kan extension is fully faithful (its unit is iso), so the unit is certainly monic.
+**Identity case — `lanFaithful_id`**
+The identity functor is Lan-faithful. Immediate: the identity's Kan extension is fully faithful (its unit is iso), so the unit is certainly monic.
 
-**Fully faithful case — `fractal_of_fullyFaithful`**
-Every fully faithful functor is [fractal](../GLOSSARY.md#fractal-functor). If `F` preserves all information at the morphism level (faithful) and reflects it back (full), then the data-level round-trip is lossless.
+**Fully faithful case — `lanFaithful_of_fullyFaithful`**
+Every fully faithful functor is Lan-faithful. If `F` preserves all information at the morphism level (faithful) and reflects it back (full), then the data-level round-trip is lossless.
 
 All three are discharged in full — no gaps, no `sorry`s. They are reference results: if your compiler is fully faithful, information preservation at the [instance level](../GLOSSARY.md#compilation-and-contract) is guaranteed.
 
 ---
 
-## `FractalOP.lean` — The Four-Level Hierarchy
+## `CoreflectiveHierarchy.lean` — The Four-Level Hierarchy
 
-Where `Fractal.lean` collapses everything into a single notion (componentwise mono unit), `FractalOP.lean` pulls it apart into four levels that reflect the actual structure of the [M2 conjecture](../GLOSSARY.md#3--internal-milestone-labels).
+Where `LanFaithful` is a single notion (componentwise mono unit), the hierarchy pulls the idea apart into four graduated levels that reflect the actual structure of the [M2 conjecture](../GLOSSARY.md#3--internal-milestone-labels).
 
 ### Level 1 — `LanFaithful`
 
@@ -78,46 +76,46 @@ def LanFaithful (F : C ⥤ D) : Prop :=
     Mono (((F.lanAdjunction (Type v)).unit.app X).app c)
 ```
 
-This is exactly the `Fractal` of `Fractal.lean`, renamed. The unit of `Lan_F ⊣ F*` is componentwise monic — no information loss — which is equivalent to `Lan_F` being faithful. Weakest level.
+This is exactly the old standalone `Fractal` definition, renamed `LanFaithful`. The unit of `Lan_F ⊣ F*` is componentwise monic — no information loss — which is equivalent to `Lan_F` being faithful. Weakest level.
 
-### Level 2 — `InstanceFractal`
+### Level 2 — `InstanceCoreflective`
 
 ```
-def InstanceFractal (F : C ⥤ D) : Prop :=
+def InstanceCoreflective (F : C ⥤ D) : Prop :=
   ∀ (X : C ⥤ Type v) (c : C),
     IsIso (((F.lanAdjunction (Type v)).unit.app X).app c)
 ```
 
 The unit is componentwise an isomorphism — not just monic, but also epi. No spurious Skolem witnesses: what you push forward and pull back is identical, not just injected. Strictly stronger than `LanFaithful`. Every fully faithful functor satisfies this.
 
-### Level 3 — `SchemaFractal`
+### Level 3 — `SchemaCoreflective`
 
 ```
-def SchemaFractal {G : D ⥤ C} (F : C ⥤ D) (adj : F ⊣ G) : Prop :=
+def SchemaCoreflective {G : D ⥤ C} (F : C ⥤ D) (adj : F ⊣ G) : Prop :=
   IsIso adj.unit
 ```
 
 The unit of an explicit adjunction `F ⊣ G` at the schema level is a natural isomorphism. The adjunction `adj` is an **explicit argument**, not a typeclass. This is intentional: at the schema level, whether a right adjoint to `F` even exists is the content of the [M2 conjecture](../GLOSSARY.md#3--internal-milestone-labels). Making it explicit means you must supply a proof of existence; you cannot accidentally discharge the conjecture via typeclass inference.
 
-### Level 4 — `Fractal`
+### Level 4 — `IsCoreflective`
 
 ```
-def Fractal {G : D ⥤ C} (F : C ⥤ D) (adj : F ⊣ G)
+def IsCoreflective {G : D ⥤ C} (F : C ⥤ D) (adj : F ⊣ G)
     [∀ X : C ⥤ Type v, F.HasPointwiseLeftKanExtension X] : Prop :=
-  SchemaFractal F adj ∧ InstanceFractal F
+  SchemaCoreflective F adj ∧ InstanceCoreflective F
 ```
 
-Both layers iso. This is the definition that matches the prose: [residue](../GLOSSARY.md#residue) zero at the schema level and at the instance level simultaneously. An equivalence of categories is a fractal; every fully faithful functor with an explicit right adjoint is a fractal.
+Both layers iso. This is the definition that matches the prose: [residue](../GLOSSARY.md#residue) zero at the schema level and at the instance level simultaneously. An equivalence of categories is a coreflective; every fully faithful functor with an explicit right adjoint is a coreflective.
 
 ### What the hierarchy buys
 
-The split lets you state partial results cleanly. You can prove `InstanceFractal F` from Mathlib adjunction theory without needing to resolve [M2](../GLOSSARY.md#3--internal-milestone-labels). You can prove `SchemaFractal F adj` if someone hands you an adjunction. Only `Fractal F adj` requires both — and that is exactly where [M2](../GLOSSARY.md#3--internal-milestone-labels) sits.
+The split lets you state partial results cleanly. You can prove `InstanceCoreflective F` from Mathlib adjunction theory without needing to resolve [M2](../GLOSSARY.md#3--internal-milestone-labels). You can prove `SchemaCoreflective F adj` if someone hands you an adjunction. Only `IsCoreflective F adj` requires both — and that is exactly where [M2](../GLOSSARY.md#3--internal-milestone-labels) sits.
 
 ---
 
 ## `DomainSpec.lean` — The Full Framework
 
-This file formalizes the setting in which [fractals](../GLOSSARY.md#fractal-functor) make sense: the two-layer compilation model, the [schema-level](../GLOSSARY.md#compilation-and-contract) and [instance-level](../GLOSSARY.md#compilation-and-contract) adjunctions, and the conjectures linking them.
+This file formalizes the setting in which [coreflectives](../GLOSSARY.md#coreflective-functor) make sense: the two-layer compilation model, the [schema-level](../GLOSSARY.md#compilation-and-contract) and [instance-level](../GLOSSARY.md#compilation-and-contract) adjunctions, and the conjectures linking them.
 
 ### Section 1: The carriers
 
@@ -283,16 +281,16 @@ This means the [M2 conjecture](../GLOSSARY.md#3--internal-milestone-labels) as s
 ## How They Connect
 
 ```
-┌─ Fractal.lean ─────────────────────────────────────────┐
-│ • Single "fractal" definition (componentwise mono)     │
+┌─ LanFaithful — base notion ─────────────────────────────┐
+│ • Single definition (componentwise mono unit)           │
 │ • Characterization + two cases (identity, fully FF)    │
 │   (all discharged)                                      │
 └─────────────────────────────────────────────────────────┘
         ↓ refined into
-┌─ FractalOP.lean ───────────────────────────────────────┐
-│ • Four-level hierarchy: LanFaithful → InstanceFractal  │
-│   → SchemaFractal → Fractal                            │
-│ • SchemaFractal takes explicit adj (M2 is not assumed) │
+┌─ CoreflectiveHierarchy.lean ───────────────────────────────────────┐
+│ • Four-level hierarchy: LanFaithful → InstanceCoreflective  │
+│   → SchemaCoreflective → IsCoreflective                            │
+│ • SchemaCoreflective takes explicit adj (M2 is not assumed) │
 │ • All four levels discharged for identity, equivalence,│
 │   and fully faithful functors                          │
 └─────────────────────────────────────────────────────────┘
@@ -300,29 +298,29 @@ This means the [M2 conjecture](../GLOSSARY.md#3--internal-milestone-labels) as s
         └─ both illustrate the ideal case of
            DomainSpec.lean
 
-┌─ S3Fractal.lean ───────────────────────────────────────┐
-│ • S2UnitFractal: unit of Lan_F ⊣ F* is iso            │
-│ • S3UnitFractal: unit of F* ⊣ Ran_F is iso            │
+┌─ S3Coreflective.lean ───────────────────────────────────────┐
+│ • S2UnitCoreflective: unit of Lan_F ⊣ F* is iso            │
+│ • S3UnitCoreflective: unit of F* ⊣ Ran_F is iso            │
 │ • Fully faithful → S2 (proved)                         │
 └─────────────────────────────────────────────────────────┘
         ↓ decoupling proved by
 ┌─ S2VsS3Counter.lean ───────────────────────────────────┐
 │ • Witness: F = Discrete(Fin 1) ⥤ Discrete(Fin 2)      │
-│ • S2UnitFractal F holds (F fully faithful)             │
-│ • S3UnitFractal F fails (unit collapses Bool → PUnit   │
+│ • S2UnitCoreflective F holds (F fully faithful)             │
+│ • S3UnitCoreflective F fails (unit collapses Bool → PUnit   │
 │   at object outside image of F)                        │
 │ • s2_and_s3_decoupled: the two conditions are          │
 │   independent — the "two symmetries" in the title      │
 └─────────────────────────────────────────────────────────┘
 
-┌─ Cofractal.lean ───────────────────────────────────────┐
-│ • Counit duals: LanCofaithful, InstanceCofractal,      │
-│   SchemaCofractal                                      │
+┌─ ReflectiveHierarchy.lean ───────────────────────────────────────┐
+│ • Counit duals: InstanceReflective, SchemaReflective,   │
+│   IsReflective (no mono-only level)                     │
 │ • Orthogonal to unit-side hierarchy                    │
 └─────────────────────────────────────────────────────────┘
         ↓ decoupling proved by
 ┌─ CounitCounter.lean ───────────────────────────────────┐
-│ • Finc is InstanceFractal but ¬InstanceCofractal       │
+│ • Finc is InstanceCoreflective but ¬InstanceReflective       │
 │ • Unit-iso and counit-iso are independent              │
 └─────────────────────────────────────────────────────────┘
 
@@ -347,14 +345,14 @@ This means the [M2 conjecture](../GLOSSARY.md#3--internal-milestone-labels) as s
 └─────────────────────────────────────────────────────────┘
 ```
 
-The results in `Fractal.lean` and `FractalOP.lean` are the *positive answer*: under the right conditions (fully faithful), information is preserved perfectly at both layers. `DomainSpec.lean` is the *research question*: when do those conditions hold in a two-layer compilation model, and what can we prove about the gaps when they don't?
+The results in `CoreflectiveHierarchy.lean` are the *positive answer*: under the right conditions (fully faithful), information is preserved perfectly at both layers. `DomainSpec.lean` is the *research question*: when do those conditions hold in a two-layer compilation model, and what can we prove about the gaps when they don't?
 
 ---
 
 ## How to Read Them
 
-**If you want to understand [fractals](../GLOSSARY.md#fractal-functor):**
-- Start with the definition at the top of `Fractal.lean`
+**If you want to understand [coreflectives](../GLOSSARY.md#coreflective-functor):**
+- Start with the definition at the top of `CoreflectiveHierarchy.lean`
 - Read the three results in order: they build intuition (identity → fully faithful → general case)
 - All proofs are complete; follow them if Lean syntax permits
 
@@ -373,17 +371,17 @@ The results in `Fractal.lean` and `FractalOP.lean` are the *positive answer*: un
 
 ## Correspondence: Math ↔ Code
 
-| Mathematical Concept | DomainSpec.lean | Fractal.lean |
+| Mathematical Concept | DomainSpec.lean | CoreflectiveHierarchy.lean |
 |---|---|---|
 | Functor $\Delta : L_1 \to L_2$ | `Δ t : (L1.obj t) ⥤ (L2.obj t)` | `F : C ⥤ D` |
 | Presheaf category $\mathrm{Set}^{L_1}$ | `L1Instances t` | `C ⥤ Type v` |
 | Left Kan extension $\mathrm{Lan}_\Delta$ | `Δ_sigma t` | `F.lan` |
 | Pullback $\Delta^*$ | `Δ_pullback t` | `F.whisker` |
-| Right Kan extension $\mathrm{Ran}_\Delta$ | `Δ_pi t` | (not used in Fractal) |
+| Right Kan extension $\mathrm{Ran}_\Delta$ | `Δ_pi t` | (not used in CoreflectiveHierarchy) |
 | Adjunction unit $\eta$ | `InstanceLeftAdjunction.unit` | `(F.lanAdjunction).unit` |
 | Unit is monic/iso | `IsIso (.unit)` | `Mono (.unit.app ...)` |
 | Fully faithful functor | `Functor.FullyFaithful (Δ t)` | `F.FullyFaithful` |
-| Instance residue | `∃ I, ¬IsIso (InstanceLeftAdjunction.unit)` | (counterexample in proof of `fractal_of_fullyFaithful`) |
+| Instance residue | `∃ I, ¬IsIso (InstanceLeftAdjunction.unit)` | (counterexample in proof of `lanFaithful_of_fullyFaithful`) |
 
 ---
 
@@ -391,24 +389,24 @@ The results in `Fractal.lean` and `FractalOP.lean` are the *positive answer*: un
 
 | Result | File | Status | Role |
 |---|---|---|---|
-| Fractal definition (mono) | Fractal.lean | Defined | Core concept |
-| Fractal ↔ faithful | Fractal.lean | **Proved** | Equivalence characterization |
-| Identity is fractal | Fractal.lean | **Proved** | Base case |
-| FullyFaithful → fractal | Fractal.lean | **Proved** | Sufficient condition |
-| Four-level hierarchy | FractalOP.lean | Defined | Refines M2 boundary |
-| LanFaithful / InstanceFractal / SchemaFractal / Fractal | FractalOP.lean | **Proved** (identity, equiv, fully FF) | Graduated cases |
+| LanFaithful definition (mono) | CoreflectiveHierarchy.lean | Defined | Core concept |
+| Coreflective ↔ faithful | CoreflectiveHierarchy.lean | **Proved** | Equivalence characterization |
+| Identity is coreflective | CoreflectiveHierarchy.lean | **Proved** | Base case |
+| FullyFaithful → coreflective | CoreflectiveHierarchy.lean | **Proved** | Sufficient condition |
+| Four-level hierarchy | CoreflectiveHierarchy.lean | Defined | Refines M2 boundary |
+| LanFaithful / InstanceCoreflective / SchemaCoreflective / IsCoreflective | CoreflectiveHierarchy.lean | **Proved** (identity, equiv, fully FF) | Graduated cases |
 | Schema adjunction (M2), unrestricted | DomainSpec.lean | **Refuted** in M2Counter.lean | Open only in restricted form |
 | Instance adjunctions (M5) | DomainSpec.lean | **Free in theory, `sorry` in file** | Mathlib wiring not yet done |
 | Weak coherence (M6) | DomainSpec.lean | **Conjectural** | Open question |
 | Strong coherence (M6_strong) | DomainSpec.lean | **Refuted** in M6Counter.lean | Four-object counterexample |
 | Four-object setup | M6Counter.lean | Defined | Shared base for M6Counter and M2Counter |
 | `M2_unrestricted_false` | M2Counter.lean | **Proved** | Refutation of unrestricted M2 |
-| S2UnitFractal definition | S3Fractal.lean | Defined | Left-Kan unit-iso condition |
-| S3UnitFractal definition | S3Fractal.lean | Defined | Right-Kan unit-iso condition |
-| Fully faithful → S2UnitFractal | S3Fractal.lean | **Proved** | `s2UnitFractal_of_fullyFaithful` |
+| S2UnitCoreflective definition | S3Coreflective.lean | Defined | Left-Kan unit-iso condition |
+| S3UnitCoreflective definition | S3Coreflective.lean | Defined | Right-Kan unit-iso condition |
+| Fully faithful → S2UnitCoreflective | S3Coreflective.lean | **Proved** | `s2UnitCoreflective_of_fullyFaithful` |
 | S2 and S3 are decoupled | S2VsS3Counter.lean | **Proved** (no `sorry`) | `s2_and_s3_decoupled` — the "two independent symmetries" |
-| Cofractal hierarchy (3 levels) | Cofractal.lean | Defined | Counit-side duals of FractalOP |
-| InstanceFractal ∧ ¬InstanceCofractal | CounitCounter.lean | **Proved** | Unit/counit independence |
+| Reflective hierarchy (3 levels) | ReflectiveHierarchy.lean | Defined | Counit-side duals of CoreflectiveHierarchy |
+| InstanceCoreflective ∧ ¬InstanceReflective | CounitCounter.lean | **Proved** | Unit/counit independence |
 
 ---
 

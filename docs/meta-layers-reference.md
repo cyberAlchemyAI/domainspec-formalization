@@ -147,6 +147,6 @@ This framework defines the structural boundaries, but the mechanics of living in
 ## Connections
 
 - **[DomainSpec Two-Layer Framework](./domainspec-two-layer-framework.md)** — Narrative exposition. The "compiled by Δ" arrow formalized in category theory. The unit η of the adjunctions measures [residue](../GLOSSARY.md#residue) precisely.
-- **[DomainSpec Paper](./paper.md)** — Formal companion. The same mathematics as the framework, in theorem/proof style: the adjoint triple, the fractal hierarchy, and the refutations of M6 Strong and M2 unrestricted in Lean 4.
+- **[DomainSpec Paper](./paper.md)** — Formal companion. The same mathematics as the framework, in theorem/proof style: the adjoint triple, the coreflective hierarchy, and the refutations of M6 Strong and M2 unrestricted in Lean 4.
 - **[Lean Formalization Guide](./lean-formalization-guide.md)** — File-by-file walkthrough of the Lean code: what each file proves, where each open conjecture lives, and how the proof obligations map to the math.
-- **[Fractal Functors](../GLOSSARY.md#fractal-functor)** — The limiting case where both [residues](../GLOSSARY.md#residue) are zero: the translation preserves information perfectly at both schema and instance levels. Proved for identity and fully faithful functors; independence of the two conditions proved in `S2VsS3Counter.lean`.
+- **[Coreflective Functors](../GLOSSARY.md#coreflective-functor)** — The limiting case where both [residues](../GLOSSARY.md#residue) are zero: the translation preserves information perfectly at both schema and instance levels. Proved for identity and fully faithful functors; independence of the two conditions proved in `S2VsS3Counter.lean`.
