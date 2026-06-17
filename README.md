@@ -11,8 +11,6 @@ edges: []
 
 # DomainSpec Theorem
 
-Every translation leaves something behind. We're trying to find out when it doesn't.
-
 ## The itch
 
 We started somewhere else — a system-design framework about how software explains itself, from domain down to code. When code is implemented from domain knowledge, information can leak. Two different domain entities can be merged into one. A business rule can be missed. A nuance the practitioners carry in their heads can fail to survive the trip into a schema. The compilation step — domain to code — is one of the places this happens, and it's the one we wanted to look at closely.
