@@ -153,10 +153,10 @@ implies whole-nat-trans iso (by `NatIso.isIso_of_isIso_app`), which
 yields `F.lan.FullyFaithful` via `Adjunction.fullyFaithfulLOfIsIsoUnit`.
 
 This is the precise Mathlib-level statement of "`InstanceCoreflective F` is
-equivalent to fully faithfulness." Note that the canonical equivalence
-between `F.FullyFaithful` and `F.lan.FullyFaithful` requires a Yoneda
-argument and is not used here; the form below is the direct unit-side
-reformulation. -/
+equivalent to fully faithfulness." The canonical equivalence between
+`F.FullyFaithful` and `F.lan.FullyFaithful` is proved separately in
+`YonedaBridge.lean` (`Functor.fullyFaithfulEquivLanFullyFaithful`); the form
+below is the direct unit-side reformulation. -/
 noncomputable def fullyFaithful_lan_of_instanceCoreflective (F : C ⥤ D)
     [∀ X : C ⥤ Type v, F.HasPointwiseLeftKanExtension X]
     (h : InstanceCoreflective F) :

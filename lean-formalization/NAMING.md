@@ -52,8 +52,12 @@ with that existing class while keeping the standard reading.
 
 **Technical note.** The clean Mathlib equivalence is between unit-iso and
 *the left adjoint* being fully faithful. For `F.lanAdjunction _`, the left
-adjoint is `F.lan`, not `F`. So `InstanceCoreflective F ⇔ F.lan.FullyFaithful`,
-not directly `F.FullyFaithful`.
+adjoint is `F.lan`, not `F`. So `InstanceCoreflective F ⇔ F.lan.FullyFaithful`
+directly. The further equivalence `F.FullyFaithful ⇔ F.lan.FullyFaithful` —
+which lets one phrase the condition on `F` itself — is proved in
+`YonedaBridge.lean` as `Functor.fullyFaithfulEquivLanFullyFaithful`
+(sorry-free, Mathlib-only). Chaining the two gives
+`InstanceCoreflective F ⇔ F.FullyFaithful`.
 
 ## Counit side — reflective (`Lan_F ⊣ F*`, counit iso)
 
@@ -104,7 +108,8 @@ project's documentation. Their mathematical content:
 | **M4** | The schema-level adjunction whose unit can fail by representability collapse (see `DomainSpec.lean`, `schemaResidueZero_forces_FF`). |
 | **M5** | The instance-level triple `Σ_F ⊣ F* ⊣ Π_F` = `Functor.lanAdjunction` + `Functor.ranAdjunction`. |
 | **M6** (strong) | "`F` injective on objects + faithful ⇒ unit of `Lan_F ⊣ F*` componentwise iso (i.e., `F` fully faithful at instance layer)." Refuted by `M6Counter.lean`. |
-| **M6′** | "`F` faithful ⇒ `Lan_F` faithful." Open; likely false. |
+| **M6′** | "`F` faithful ⇒ `Lan_F` faithful" (unit componentwise mono for every `X`). **Refuted** for universal `X` (bicyclic witness); **proven** on the ind-fragment `Ind(L₁)` under `[F.Faithful]`. Mechanized in the broader DomainSpec project (`Bicyclic.lean`, `M6PrimeOnInd.lean`), not in this public subset. |
+| **M6-restricted** | Under `[InstanceReflective F]` (i.e. `F*` fully faithful), `IsIso (η_X) ↔ X ∈ F*`-essential-image. **Proven** (no `sorry`) in `M6Restricted.lean` (`m6_restricted`), via Mathlib's `Adjunction.isIso_unit_app_iff_mem_essImage`. |
 
 ## Brand vs. math
 

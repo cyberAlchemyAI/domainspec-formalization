@@ -15,9 +15,11 @@ This document describes what lives in `CoreflectiveHierarchy.lean` and `DomainSp
 
 ## Overview
 
-Eight files, organized by purpose:
+Ten files, organized by purpose:
 
 **`CoreflectiveHierarchy.lean`** — The unit-side kernel. Defines a [coreflective functor](../GLOSSARY.md#coreflective-functor) and splits it into four graduated levels — `LanFaithful` (componentwise mono unit, the weakest; equivalent to `Lan_F` faithful), `InstanceCoreflective` (componentwise iso unit), `SchemaCoreflective`, and `IsCoreflective` (both layers) — so that the [M2 conjecture](../GLOSSARY.md#3--internal-milestone-labels) is captured precisely. Gives the equivalent characterization (faithfulness of the left Kan extension) and discharges the base cases (identity, fully faithful); every claim discharged, no sorries. The schema-level definition takes an explicit adjunction argument rather than a typeclass, preventing typeclass inference from silently assuming the conjecture. (This file absorbs the earlier standalone `Fractal.lean`, now its weakest level `LanFaithful`.)
+
+**`YonedaBridge.lean`** — The bridge from `F` to its Kan extension. Proves `Functor.fullyFaithfulEquivLanFullyFaithful`: a functor `F` is fully faithful **iff** its left Kan extension `F.lan` is fully faithful. This is what lets the README/paper say "fully faithful translation" and the formalization say "`InstanceCoreflective`" (= `Lan_F` fully faithful) and mean the same thing: chaining this equivalence with `fullyFaithful_lan_of_instanceCoreflective` gives `InstanceCoreflective F ⇔ F.FullyFaithful`. Mathlib-only, sorry-free.
 
 **`S3Coreflective.lean`** — Two parallel unit-iso conditions. Defines `S2UnitCoreflective F` (unit of `Lan_F ⊣ F*` is iso — the left-Kan adjunction) and `S3UnitCoreflective F` (unit of `F* ⊣ Ran_F` is iso — the right-Kan adjunction). Both are instance-layer properties; they are independent of each other. Proves that every fully faithful functor is S2 unit-coreflective.
 
@@ -32,6 +34,8 @@ Eight files, organized by purpose:
 **`M6Counter.lean`** — The four-object counterexample. Constructs the concrete setup (`L1 = Discrete (Fin 2)`, `L2 = {a, b, f : a → b}`, Δ the inclusion) used to refute the strong form of the [M6 coherence conjecture](../GLOSSARY.md#3--internal-milestone-labels): even when Δ is fully faithful, the [instance-level](../GLOSSARY.md#compilation-and-contract) unit fails to be iso. The carriers, the category structure, and the Kan-extension instance live here.
 
 **`M2Counter.lean`** — The refutation of unrestricted [M2](../GLOSSARY.md#3--internal-milestone-labels). Reuses the four-object setup from `M6Counter.lean` and shows that the unrestricted Schema-Adjunction Conjecture is false: the presheaf `(Δ.op ⋙ yoneda.obj b)` is not representable, so no schema-level right adjoint exists in general. The conjecture survives only in restricted form.
+
+**`M6Restricted.lean`** — The M6-restricted theorem (proven, no sorries). Under `[InstanceReflective F]` (the precomposition functor `F*` fully faithful), the unit component `η_X` is an isomorphism **iff** `X` lies in the essential image of `F*` — `m6_restricted`, a direct consequence of Mathlib's `Adjunction.isIso_unit_app_iff_mem_essImage`. This closes the M6-restricted conjecture: schema discipline does force instance-level fidelity, but only on the reflective fragment `F*` carves out.
 
 ---
 
