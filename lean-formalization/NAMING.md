@@ -108,7 +108,7 @@ project's documentation. Their mathematical content:
 | **M4** | The schema-level adjunction whose unit can fail by representability collapse (see `DomainSpec.lean`, `schemaResidueZero_forces_FF`). |
 | **M5** | The instance-level triple `Σ_F ⊣ F* ⊣ Π_F` = `Functor.lanAdjunction` + `Functor.ranAdjunction`. |
 | **M6** (strong) | "`F` injective on objects + faithful ⇒ unit of `Lan_F ⊣ F*` componentwise iso (i.e., `F` fully faithful at instance layer)." Refuted by `M6Counter.lean`. |
-| **M6′** | "`F` faithful ⇒ `Lan_F` faithful" (unit componentwise mono for every `X`). **Refuted** for universal `X` (bicyclic witness); **proven** on the ind-fragment `Ind(L₁)` under `[F.Faithful]`. Mechanized in the broader DomainSpec project (`Bicyclic.lean`, `M6PrimeOnInd.lean`), not in this public subset. |
+| **M6′** | "`F` faithful ⇒ `Lan_F` faithful" (unit componentwise mono for every `X`). **Refuted** for universal `X` (bicyclic witness); **proven** on the ind-fragment `Ind(L₁)` under `[F.Faithful]`. Both mechanized here in `Bicyclic.lean` and `M6PrimeOnInd.lean` (sorry-free). |
 | **M6-restricted** | Under `[InstanceReflective F]` (i.e. `F*` fully faithful), `IsIso (η_X) ↔ X ∈ F*`-essential-image. **Proven** (no `sorry`) in `M6Restricted.lean` (`m6_restricted`), via Mathlib's `Adjunction.isIso_unit_app_iff_mem_essImage`. |
 
 ## Brand vs. math

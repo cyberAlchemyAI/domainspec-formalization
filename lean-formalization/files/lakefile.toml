@@ -1,5 +1,5 @@
 name = "domainspec"
-defaultTargets = ["DomainSpec", "CoreflectiveHierarchy", "M6Counter", "M2Counter", "ReflectiveHierarchy", "CounitCounter", "S3Coreflective", "S2VsS3Counter", "YonedaBridge", "M6Restricted"]
+defaultTargets = ["DomainSpec", "CoreflectiveHierarchy", "M6Counter", "M2Counter", "ReflectiveHierarchy", "CounitCounter", "S3Coreflective", "S2VsS3Counter", "YonedaBridge", "M6Restricted", "Bicyclic", "M6PrimeOnInd"]
 
 [[require]]
 name = "mathlib"
@@ -43,4 +43,12 @@ srcDir = ".."
 
 [[lean_lib]]
 name = "M6Restricted"
+srcDir = ".."
+
+[[lean_lib]]
+name = "Bicyclic"
+srcDir = ".."
+
+[[lean_lib]]
+name = "M6PrimeOnInd"
 srcDir = ".."

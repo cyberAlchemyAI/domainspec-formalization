@@ -141,7 +141,7 @@ This is the practical payoff. The [residue](../GLOSSARY.md#residue) is not a sof
 
 ## Interlude — Status at a Glance
 
-> **Status note.** The conjecture prose below is retained as originally posed, but two of the open items have since moved: **M6-restricted is proven** (`M6Restricted.lean`, no `sorry`), and **M6′ is resolved** — refuted for universal $I$ (bicyclic witness) and proven on the ind-fragment $\mathrm{Ind}(\mathcal{L}_1)$ (mechanized in the broader DomainSpec project, not in this public subset). M2 remains the one genuinely open conjecture. See `GLOSSARY.md` §3 for the current status table.
+> **Status note.** The conjecture prose below is retained as originally posed, but two of the open items have since moved: **M6-restricted is proven** (`M6Restricted.lean`, no `sorry`), and **M6′ is resolved** — refuted for universal $I$ (bicyclic witness) and proven on the ind-fragment $\mathrm{Ind}(\mathcal{L}_1)$ (mechanized here in `Bicyclic.lean` and `M6PrimeOnInd.lean`, sorry-free). M2 remains the one genuinely open conjecture. See `GLOSSARY.md` §3 for the current status table.
 
 **Framework (formalized in Lean):**
 
@@ -164,7 +164,7 @@ This is the practical payoff. The [residue](../GLOSSARY.md#residue) is not a sof
 **Open Conjectures:**
 
 - **[M2-restricted](../GLOSSARY.md#3--internal-milestone-labels) — Schema-Level Adjunction (Representability) under a restriction on $\Delta$.** Identify a class of functors $\Delta$ (e.g. fully faithful, dense, pointwise codense) for which $\mathrm{Hom}_{\mathcal{L}_2}(\Delta(-), b)$ is representable on $\mathcal{L}_1$ for every $b \in \mathcal{L}_2$. The unrestricted form is refuted (see Original Results above); the restricted form is open. If true under the right restriction, $G$ exists pointwise and $\eta^{\mathrm{sch}}$ is the [schema residue](../GLOSSARY.md#residue)'s name.
-- **[M6'](../GLOSSARY.md#3--internal-milestone-labels) — Instance-Level Monomorphism Coherence.** $\Delta$ faithful $\implies$ $\eta^{\mathrm{ins}}_I$ pointwise monic for every $I \in \mathbf{Set}^{\mathcal{L}_1}$. On representables it's immediate; the lift to all $I$ is the open part.
+- **[M6'](../GLOSSARY.md#3--internal-milestone-labels) — Instance-Level Monomorphism Coherence.** $\Delta$ faithful $\implies$ $\eta^{\mathrm{ins}}_I$ pointwise monic for every $I \in \mathbf{Set}^{\mathcal{L}_1}$. On representables it's immediate; the lift holds on the ind-fragment (filtered colimits, `M6PrimeOnInd.lean`) and fails in general (`Bicyclic.lean`) — refuted for universal $I$, proven on $\mathrm{Ind}(\mathcal{L}_1)$.
 - **[M6-restricted](../GLOSSARY.md#3--internal-milestone-labels) — Coherence on a Fragment.** $\Delta$ injective + faithful $\implies$ $\eta^{\mathrm{ins}}_I$ iso for every $I$ in some reflective subcategory of $\mathbf{Set}^{\mathcal{L}_1}$ (e.g., representable-generated states).
 
 ---
@@ -236,19 +236,19 @@ Therefore $\Sigma_\Delta I (b) = I(a) \sqcup I(b) = \{\ast\} \sqcup \{\ast\}$, a
 
 The intuition fails because $\Sigma_\Delta$ generates fresh witnesses whenever $\mathcal{L}_2$ contains a morphism not in the image of $\Delta$, and faithfulness is silent on that condition.
 
-#### M6' (mono only) — Open conjecture
+#### M6' (mono only) — Resolved (refuted in general, proven on Ind)
 
 **Conjecture ([M6'](../GLOSSARY.md#3--internal-milestone-labels)).** $\Delta$ faithful $\implies$ for every $I \in \mathbf{Set}^{\mathcal{L}_1}$, $\eta^{\mathrm{ins}}_{I, c}$ is injective for every $c$.
 
 **On representables, the equivalence is immediate.** Take $I = \mathrm{y}_{\mathcal{L}_1}(c) = \mathrm{Hom}_{\mathcal{L}_1}(c, -)$. Then the unit unfolds to $\mathrm{Hom}_{\mathcal{L}_1}(c, c') \to \mathrm{Hom}_{\mathcal{L}_2}(\Delta c, \Delta c')$, $h \mapsto \Delta h$. Mono iff $\Delta$ faithful.
 
-**The lift to all $I$ is where it gets stuck.** Every $I$ is a colimit of representables. $\Sigma_\Delta$ preserves colimits. $\Delta^*$ preserves all limits and colimits. So $\eta^{\mathrm{ins}}_I$ for $I = \mathrm{colim}\, \mathrm{y}(c_i)$ is the colimit of the $\eta^{\mathrm{ins}}_{\mathrm{y}(c_i)}$. But pointwise mono in $\mathbf{Set}^{\mathcal{L}_1}$ is preserved by *filtered* colimits, not arbitrary ones. Whether faithfulness alone forces the lift to remain mono — possibly under hypotheses on $\mathcal{L}_1$ — is open.
+**The lift to all $I$ is where it gets stuck.** Every $I$ is a colimit of representables. $\Sigma_\Delta$ preserves colimits. $\Delta^*$ preserves all limits and colimits. So $\eta^{\mathrm{ins}}_I$ for $I = \mathrm{colim}\, \mathrm{y}(c_i)$ is the colimit of the $\eta^{\mathrm{ins}}_{\mathrm{y}(c_i)}$. But pointwise mono in $\mathbf{Set}^{\mathcal{L}_1}$ is preserved by *filtered* colimits, not arbitrary ones. This is exactly the resolution: on the ind-fragment $\mathrm{Ind}(\mathcal{L}_1)$ (filtered colimits of representables) faithfulness *does* force the lift to stay mono (`M6PrimeOnInd.lean`, `unit_mono_on_Ind`); for non-filtered colimits it can fail — a bicyclic witness breaks it (`Bicyclic.lean`, `lanUnit_app_not_mono_bicyclic`). So universal M6′ is refuted, ind-fragment M6′ is proven.
 
-#### M6-restricted — Also surviving
+#### M6-restricted — Proven
 
-**Conjecture ([M6-restricted](../GLOSSARY.md#3--internal-milestone-labels)).** $A_{\mathrm{inj}} \implies \eta^{\mathrm{ins}}_I$ iso for every $I$ in some reflective subcategory $\mathcal{S} \subseteq \mathbf{Set}^{\mathcal{L}_1}$ — for example, states satisfying $\mathcal{L}_1$'s path equations, or representable-generated states under finite colimits.
+**Theorem ([M6-restricted](../GLOSSARY.md#3--internal-milestone-labels), `M6Restricted.lean`).** Under `InstanceReflective F` (the precomposition functor $\Delta^*$ fully faithful), $\eta^{\mathrm{ins}}_I$ is iso **iff** $I$ lies in the essential image of $\Delta^*$. So the reflective fragment on which coherence holds is exactly that essential image — `m6_restricted`, no `sorry`, via Mathlib's `Adjunction.isIso_unit_app_iff_mem_essImage`.
 
-This is more useful operationally if it lands: real system instances are not arbitrary copresheaves, they are constrained.
+This is the operationally useful case: real system instances are not arbitrary copresheaves, they are constrained — and the fragment is now pinned down precisely.
 
 ---
 
@@ -264,8 +264,8 @@ The formal commitment:
 - $T$ is a join-semilattice (thin category) for temporal indexing
 - $\Sigma_\Delta \dashv \Delta^* \dashv \Pi_\Delta$ via the presheaf Kan extension adjunctions (no conjecture)
 - [M2](../GLOSSARY.md#3--internal-milestone-labels) (representability of schema adjoint) is conjectural
-- [M6'](../GLOSSARY.md#3--internal-milestone-labels) (faithfulness buys [instance-level](../GLOSSARY.md#compilation-and-contract) monomorphism) is open
-- [M6-restricted](../GLOSSARY.md#3--internal-milestone-labels) (coherence on a fragment) is open
+- [M6'](../GLOSSARY.md#3--internal-milestone-labels) (faithfulness buys [instance-level](../GLOSSARY.md#compilation-and-contract) monomorphism) is resolved — refuted for universal $I$ (`Bicyclic.lean`), proven on the ind-fragment (`M6PrimeOnInd.lean`)
+- [M6-restricted](../GLOSSARY.md#3--internal-milestone-labels) (coherence on a fragment) is proven (`M6Restricted.lean`)
 
 ---
 
@@ -279,7 +279,7 @@ The Two-Layer framework is not free.
 | Schema Representability ([M2](../GLOSSARY.md#3--internal-milestone-labels)) — *conjectural* | [Schema-level](../GLOSSARY.md#compilation-and-contract) adjunction without setup | Each $P_b$'s representability must be argued |
 | Information Tightness ($A_{\mathrm{inj}}$) | DPI tightens to equality at [schema level](../GLOSSARY.md#compilation-and-contract) on objects | Forbids many-to-one schema compilation. **Critically: does NOT propagate to [instance side](../GLOSSARY.md#compilation-and-contract).** |
 | [Instance-level](../GLOSSARY.md#compilation-and-contract) migration ([M5](../GLOSSARY.md#3--internal-milestone-labels)) — *theorem* | $\Sigma_\Delta \dashv \Delta^* \dashv \Pi_\Delta$ for free | Two layers of [residue](../GLOSSARY.md#residue); doubles the auditing surface |
-| **[M6'](../GLOSSARY.md#3--internal-milestone-labels) (mono) — *conjectural*** | **If true: faithfulness alone buys [instance-level](../GLOSSARY.md#compilation-and-contract) monomorphism** | **Open. Lift from representables to all $I$ is the hard part.** |
+| **[M6'](../GLOSSARY.md#3--internal-milestone-labels) (mono) — *resolved*** | **Faithfulness buys [instance-level](../GLOSSARY.md#compilation-and-contract) monomorphism on the ind-fragment (`M6PrimeOnInd.lean`)** | **Fails for arbitrary $I$ — bicyclic witness (`Bicyclic.lean`); the lift survives only for filtered colimits.** |
 
 **The pointed concession.** [Schema-level](../GLOSSARY.md#compilation-and-contract) injectivity does not buy [instance-level](../GLOSSARY.md#compilation-and-contract) fidelity. The audit is permanently double. [M3](../GLOSSARY.md#3--internal-milestone-labels) buys [schema-level](../GLOSSARY.md#compilation-and-contract) tightness only; [instance-level](../GLOSSARY.md#compilation-and-contract) fidelity is paid separately, either by the strictly stronger fully-faithful condition or by restriction to a fragment whose realism is empirically argued.
 

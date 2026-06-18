@@ -15,7 +15,7 @@ This document describes what lives in `CoreflectiveHierarchy.lean` and `DomainSp
 
 ## Overview
 
-Ten files, organized by purpose:
+Twelve files, organized by purpose:
 
 **`CoreflectiveHierarchy.lean`** — The unit-side kernel. Defines a [coreflective functor](../GLOSSARY.md#coreflective-functor) and splits it into four graduated levels — `LanFaithful` (componentwise mono unit, the weakest; equivalent to `Lan_F` faithful), `InstanceCoreflective` (componentwise iso unit), `SchemaCoreflective`, and `IsCoreflective` (both layers) — so that the [M2 conjecture](../GLOSSARY.md#3--internal-milestone-labels) is captured precisely. Gives the equivalent characterization (faithfulness of the left Kan extension) and discharges the base cases (identity, fully faithful); every claim discharged, no sorries. The schema-level definition takes an explicit adjunction argument rather than a typeclass, preventing typeclass inference from silently assuming the conjecture. (This file absorbs the earlier standalone `Fractal.lean`, now its weakest level `LanFaithful`.)
 
@@ -36,6 +36,10 @@ Ten files, organized by purpose:
 **`M2Counter.lean`** — The refutation of unrestricted [M2](../GLOSSARY.md#3--internal-milestone-labels). Reuses the four-object setup from `M6Counter.lean` and shows that the unrestricted Schema-Adjunction Conjecture is false: the presheaf `(Δ.op ⋙ yoneda.obj b)` is not representable, so no schema-level right adjoint exists in general. The conjecture survives only in restricted form.
 
 **`M6Restricted.lean`** — The M6-restricted theorem (proven, no sorries). Under `[InstanceReflective F]` (the precomposition functor `F*` fully faithful), the unit component `η_X` is an isomorphism **iff** `X` lies in the essential image of `F*` — `m6_restricted`, a direct consequence of Mathlib's `Adjunction.isIso_unit_app_iff_mem_essImage`. This closes the M6-restricted conjecture: schema discipline does force instance-level fidelity, but only on the reflective fragment `F*` carves out.
+
+**`Bicyclic.lean`** — The bicyclic refutation of M6′ (proven, no sorries). `lanUnit_app_not_mono_bicyclic` exhibits a faithful functor whose `Lan`-unit is *not* componentwise monic — refuting the universal-`I` form of M6′ (faithfulness alone does **not** buy instance-level monomorphism for every `I`). Strictly stronger than `M6Counter`, which only refutes the iso form.
+
+**`M6PrimeOnInd.lean`** — The positive companion to `Bicyclic` (proven, no sorries). `unit_mono_on_Ind`: under `[F.Faithful]`, the `Lan`-unit *is* componentwise monic on the ind-fragment `Ind(L₁)` (filtered colimits of representables). Together with `Bicyclic.lean` this pins M6′ exactly: refuted in general, proven on the ind-fragment.
 
 ---
 
